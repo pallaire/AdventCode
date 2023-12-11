@@ -23,31 +23,24 @@ def translateDigits(d):
 		'9': 9,
 		'0': 0,
 	}
-
 	return reference[d]
 
-def filterCalibrationValues(lines, useTranslation):
+def filterCalibrationValues(lines, useWords):
 	res = 0
 	for aline in lines:
-
-		print(aline)
-		if useTranslation:
+		if useWords:
 			digits = re.findall(r"(?=(\d|one|two|three|four|five|six|seven|eight|nine))", aline)
 		else:
 			digits = re.findall("\d", aline)
 
 		if len(digits) > 0:
 			number = translateDigits(digits[0])*10 + translateDigits(digits[-1])
-			print(number)
 			res += number
-		else:
-			print(f"NO number for line >{aline}<")
 	return res
 
 def readCalibrationFile(filename):
 	with open(filename) as inputfile:
 		return inputfile.readlines()
-
 
 lines = readCalibrationFile('large.data')
 res = filterCalibrationValues(lines, False)
