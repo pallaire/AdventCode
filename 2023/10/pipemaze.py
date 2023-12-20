@@ -88,8 +88,6 @@ def scaleMazeByThree(data):
 def solveMazeMaxDistance(data, getContainedTiles):
     h = len(data)
     w = len(data[0])
-    sx = -1
-    sy = -1
 
     visited = set()
     toVisitStack = []
@@ -99,8 +97,6 @@ def solveMazeMaxDistance(data, getContainedTiles):
         x = data[y].find("S")
         if x != -1:
             toVisitStack.append({'x':x, 'y':y, 'count':0, "path":[]})
-            sx = x
-            sy = y
             break
 
     maxDistance = 0
@@ -120,10 +116,8 @@ def solveMazeMaxDistance(data, getContainedTiles):
         currentPath = abranch['path']
 
         positionLabel = f"y:{abranch['y']},x:{abranch['x']},"
-        #print(f"{positionLabel} with count {count}")
 
         if positionLabel in visited:
-            #print(f"Warning, would loop at {positionLabel}")
             continue
         else:
             visited.add(positionLabel)
@@ -159,7 +153,6 @@ def solveMazeMaxDistance(data, getContainedTiles):
             x = pos['x']
             y = pos['y']
             cleaned[y][x] = data[y][x]
-
 
         # Scale Maze
         scaled = scaleMazeByThree(cleaned)
@@ -203,84 +196,8 @@ def solveMazeMaxDistance(data, getContainedTiles):
                 elif c == '?':
                     scaled[y][x] = ' '
 
-        printMaze(scaled)
-
-
-
-
+        # printMaze(scaled)
         return count
-
-
-        # mazeFont = {'F':'┌', '7':'┐', 'J':'┘', 'L':'└', '-':'─', '|':'│'}
-
-
-        # drawing = alloc2DCharArray(w, h, '.')
-        # for pos in maxPath:
-        #     x = pos['x']
-        #     y = pos['y']
-        #     drawing[y][x] = data[y][x]
-
-        # # remove edges HOR  --> and <--
-        # for y in range(h):
-        #     for x in range(w):
-        #         if drawing[y][x] == '.':
-        #             drawing[y][x] = ' '
-        #         else:
-        #             break
-
-        #     for x in range(w):
-        #         if drawing[y][w - x - 1] == '.':
-        #             drawing[y][w - x - 1] = ' '
-        #         else:
-        #             break
-
-        # # vertical
-        # for x in range(w):
-        #     for y in range(h):
-        #         if drawing[y][x] == '.' or drawing[y][x] == ' ':
-        #             drawing[y][x] = ' '
-        #         else:
-        #             break
-
-        #     for y in range(h):
-        #         if drawing[h - y - 1][x] == '.' or drawing[h - y - 1][x] == ' ':
-        #             drawing[h - y - 1][x] = ' '
-        #         else:
-        #             break
-
-        # # find internal tile hor
-        # for y in range(h):
-        #     count = 0
-        #     for x in range(w):
-
-        #         # if drawing[y][x] != '.' and drawing[y][x] != ' ':
-        #         if drawing[y][x] == '│':
-        #             # wall
-        #             count += 1
-
-        #         elif drawing[y][x] == '.':
-        #             if count&1 == 1:
-        #                 drawing[y][x] = '🯅'
-
-        # inCount = 0
-
-        # for x in range(w):
-        #     count = 0
-        #     for y in range(h):
-
-        #         if drawing[y][x] == '─':
-        #             # wall
-        #             count += 1
-
-        #         elif drawing[y][x] == '.':
-        #             if count&1 == 1:
-        #                 drawing[y][x] = '🯅'
-        #                 inCount += 1
-
-       
-
-        # printMaze(drawing)
-        # return inCount
 
     else:
         return math.ceil(maxDistance / 2)
