@@ -9,7 +9,7 @@ def readData(filename):
             if len(aline) > 0:
                 res.append(aline)
         return res
-    
+
 
 def decodeRule(ruletext):
     decodedRule = {}
@@ -59,10 +59,10 @@ def followRules(part, rules, step):
                 if c['dest'] in terminal:
                     return c['dest']
                 return followRules(part, rules, c['dest'])
-    
+
     if default=='A' or default=='R':
         return default
-    
+
     return followRules(part, rules, default)
 
 
@@ -81,19 +81,88 @@ def filterParts(data):
             decodedRule = decodeRule(aline)
             rules[decodedRule['name']] = decodedRule
 
-    print(parts)
-
     total = 0
     for apart in parts:
         res = followRules(apart, rules, 'in')
 
         if res == 'A':
-            print(f"Accepted : {apart}")
+            # print(f"Accepted : {apart}")
             total += sum(apart.values())
-        else:
-            print(f"Rejected : {apart}")
 
     return total
+
+def permutePossiblePaths(path):
+    mins = {'a':1, 'm':1, 's':1, 'x':1}
+    maxs = {'a':4000, 'm':4000, 's':4000, 'x':4000}
+    deltas = {'a':0, 'm':0, 's':0, 'x':0}
+
+    for condition in path:
+        (name, part, check, value) = condition
+
+        if check == '<':
+            maxs[part] = min(maxs[part], value-1)
+        elif check == '<=':
+            maxs[part] = min(maxs[part], value)
+        elif check == '>':
+            mins[part] = max(mins[part], value+1)
+        elif check == '>=':
+            mins[part] = max(mins[part], value)
+
+    # +1 because mins and maxs are inclusive
+    deltas['a'] = maxs['a'] - mins['a'] + 1
+    deltas['m'] = maxs['m'] - mins['m'] + 1
+    deltas['s'] = maxs['s'] - mins['s'] + 1
+    deltas['x'] = maxs['x'] - mins['x'] + 1
+
+    res = deltas['a'] * deltas['m'] * deltas['s'] * deltas['x']
+    
+    # print(f"    {res} from deltas = {deltas}")
+    # print()
+    # print()
+
+    return res
+
+
+
+def followAcceptationPath(rules, currentPath, name):
+    arule = rules[name]
+
+    res = 0
+    inverts = {'<':'>=', '>':'<='}
+
+    invertedConditions = []
+    for subchecks in arule['checks']:
+        check = (name, subchecks['part'], subchecks['check'], subchecks['value'])
+        invcheck = (name, subchecks['part'], inverts[subchecks['check']],subchecks['value'])
+
+        if subchecks['dest'] != 'R':
+            extendedPath = []
+            extendedPath += currentPath
+            extendedPath += invertedConditions
+            extendedPath.append(check)
+
+            if subchecks['dest'] == 'A':
+                # print(f"A from check = {extendedPath}")
+                res += permutePossiblePaths(extendedPath)
+            else:
+                res += followAcceptationPath(rules, extendedPath, subchecks['dest'])
+
+        invertedConditions.append(invcheck)
+
+    if arule['default'] != 'R':
+        extendedPath = []
+        extendedPath += currentPath
+        extendedPath += invertedConditions
+
+        if arule['default'] == 'A':
+            # print(f"A from default = {extendedPath}")
+            res += permutePossiblePaths(extendedPath)
+        else:
+            res += followAcceptationPath(rules, extendedPath, arule['default'])
+
+    return res
+
+
 
 def findAcceptableCombinations(data):
     rules = {}
@@ -102,46 +171,9 @@ def findAcceptableCombinations(data):
             decodedRule = decodeRule(aline)
             rules[decodedRule['name']] = decodedRule
 
-    defaultAccept = []
-    defaultReject = []
-    checksToAccept = []
-    checksToReject = []
-    rulesNames = set(rules.keys())
-    rulesDests = set()
-
-    for arulekey in rules:
-        arule = rules[arulekey]
-        for subchecks in arule['checks']:
-            if subchecks['dest'] != 'A' and subchecks['dest'] != 'R':
-                rulesDests.add(subchecks['dest'])
-
-    if len(rulesDests) != len(rulesNames):
-        print(f"Rules without dest??? dests:{len(rulesDests)}   rules:{len(rulesNames)}")
-
-    validRulesNames = set()
-    validRulesNames.add('in')
-    for rulename in rulesNames:
-        if (rulename in rulesDests or rulename=="in") and rulename!='A' and rulename!='R':
-            validRulesNames.add(rulename)
-
-    for arulekey in rules:
-        arule = rules[arulekey]
-
-        default = arule['default']
-        if default == 'A':
-            defaultAccept.append(arule)
-        elif default == 'R':
-            defaultReject.append(arule)
-
-    print(f"dests:{len(rulesDests)}   rules:{len(validRulesNames)}")
-    print(sorted(rulesDests))
-    print(sorted(validRulesNames))
-
-            
-
-    
+    return followAcceptationPath(rules, "", "in")
 
 
 data = readData("large.data")
-# print(f"Problem 1: {filterParts(data)}")
+print(f"Problem 1: {filterParts(data)}")
 print(f"Problem 2: {findAcceptableCombinations(data)}")
