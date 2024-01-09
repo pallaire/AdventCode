@@ -20,13 +20,13 @@ class Broadcaster:
 		self.lowCount = 0
 		self.highCount = 0
 		
-	def receivePulse(self, pulse, source):
+	def receivePulse(self, pulse, source, idx):
 		res = []
 		for d in self.destinations:
 			self.lowCount += 1
 			res.append({'dest':d, 'source':self.name, 'pulse':kLowPulse})
-		print(f"Module:{self.name} received pulse:{pulse} from:{source}")
-		print(f"     sending: {res}")
+		# print(f"Module:{self.name} received pulse:{pulse} from:{source}")
+		# print(f"     sending: {res}")
 		return res
 	
 	
@@ -38,7 +38,7 @@ class FlipFlop:
 		self.lowCount = 0
 		self.highCount = 0
 		
-	def receivePulse(self, pulse, source):
+	def receivePulse(self, pulse, source, idx):
 		if pulse == kHighPulse:
 			return []
 		
@@ -56,8 +56,8 @@ class FlipFlop:
 				self.highCount += 1
 				
 			res.append({'dest':d, 'source':self.name, 'pulse':sendPulse})
-		print(f"Module:{self.name} received pulse:{pulse} from:{source}")
-		print(f"     sending: {res}")	
+		# print(f"Module:{self.name} received pulse:{pulse} from:{source}")
+		# print(f"     sending: {res}")	
 		return res
 	
 
@@ -69,7 +69,7 @@ class Conjunction:
 		self.lowCount = 0
 		self.highCount = 0
 		
-	def receivePulse(self, pulse, source):
+	def receivePulse(self, pulse, source, idx):
 		self.state[source] = pulse
 		
 		allHigh = True
@@ -90,8 +90,8 @@ class Conjunction:
 				self.highCount += 1
 				
 			res.append({'dest':d, 'source':self.name, 'pulse':sendPulse})
-		print(f"Module:{self.name} received pulse:{pulse} from:{source}")
-		print(f"     sending: {res}")	
+		# print(f"Module:{self.name} received pulse:{pulse} from:{source}")
+		# print(f"     sending: {res}")	
 		return res
 	
 	def setupInputs(self, inputs):
@@ -104,23 +104,18 @@ class RecieverOnly:
 		self.lowCount = 0
 		self.highCount = 0
 		
-	def receivePulse(self, pulse, source):
-		print(f"Module:{self.name} received pulse:{pulse} from:{source}")
-		print(f"     sending: {[]}")	
+	def receivePulse(self, pulse, source, idx):
+		# print(f"Module:{self.name} received pulse:{pulse} from:{source}")
+		# print(f"     sending: {[]}")	
 		return []
 	
-
-
-def pulseManager(data):
-	
+def createModules(data):
 	modules = {}
-	queue = []
 	conjunctions = []
 	
 	broadcaster = None
 	
 	for aline in data:
-		print(aline)
 		tokens = re.match(r"([%&\w]+) -> (.*)", aline)
 		(source, destinations) = tokens.groups()
 		destinations = destinations.replace(' ', '')
@@ -150,30 +145,25 @@ def pulseManager(data):
 				inputs.append(m.name)
 		c.setupInputs(inputs)
 
+	return modules
 
-		
-	print(f"Modules: {modules.keys()}")
-	print()
+
+def pulseManager(data):
 	
-	for k in modules.keys():
-		print(f"module key name >>{k}<<")
-		
+	queue = []
+	modules = createModules(data)
 	
-	for _ in range(1000):
-			
+	for idx in range(1000):
 		queue.append({'dest':'broadcaster', 'source':'button', 'pulse':kLowPulse})
 		
 		while len(queue) > 0:
 			task = queue.pop(0)
-			# print(f"Working on task: {task}")
 
 			if task['dest'] not in modules:
 				modules[task['dest']] = RecieverOnly(task['dest'])
 
 			obj = modules[task['dest']]
-			
-			nextitems = obj.receivePulse(task['pulse'], task['source'])
-			
+			nextitems = obj.receivePulse(task['pulse'], task['source'], idx)
 			queue = queue + nextitems
 			
 	lows = 0
@@ -183,11 +173,41 @@ def pulseManager(data):
 		highs += m.highCount
 		
 	print(f"Finales lows:{lows} highs:{highs}")
-	# + 1000 is for the initial button sending to the broadcaster
 	return (lows+1000)*highs
 			
 			
 			
+def computeButtonPressToActivation(data):
+	modules = createModules(data)
+	destToSource = {}
+	queue = []
+
+
+	for i in range(1000):
+		print(i)
+
+		queue.append({'dest':'broadcaster', 'source':'button', 'pulse':kLowPulse})
+
+		while len(queue) > 0:
+			task = queue.pop(0)
+			# print(f"Working on task: {task}")
+
+			if task['dest'] not in modules:
+				modules[task['dest']] = RecieverOnly(task['dest'])
+
+			obj = modules[task['dest']]
+
+			nextitems = obj.receivePulse(task['pulse'], task['source'], i)
+
+			queue = queue + nextitems
+
+		print()
+		print()
+
+
+	for m in modules:
+		if type(m) == Conjunction:
+			print(f"{m.name}  :  {m.freqCounter}")
 			
 			
 			
