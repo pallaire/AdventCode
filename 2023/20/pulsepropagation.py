@@ -1,4 +1,5 @@
 import re
+import math
 
 def readData(filename):
 	with open(filename) as inputfile:
@@ -25,8 +26,6 @@ class Broadcaster:
 		for d in self.destinations:
 			self.lowCount += 1
 			res.append({'dest':d, 'source':self.name, 'pulse':kLowPulse})
-		# print(f"Module:{self.name} received pulse:{pulse} from:{source}")
-		# print(f"     sending: {res}")
 		return res
 	
 	
@@ -56,8 +55,6 @@ class FlipFlop:
 				self.highCount += 1
 				
 			res.append({'dest':d, 'source':self.name, 'pulse':sendPulse})
-		# print(f"Module:{self.name} received pulse:{pulse} from:{source}")
-		# print(f"     sending: {res}")	
 		return res
 	
 
@@ -68,8 +65,16 @@ class Conjunction:
 		self.state = {}
 		self.lowCount = 0
 		self.highCount = 0
+
+		self.lastSentPulse = -1
+		self.sendLowPulseIdx = -1
+		self.receivedLowPulseIdx = -1
 		
 	def receivePulse(self, pulse, source, idx):
+
+		if pulse==kLowPulse and self.receivedLowPulseIdx == -1:
+			self.receivedLowPulseIdx = idx
+
 		self.state[source] = pulse
 		
 		allHigh = True
@@ -81,6 +86,10 @@ class Conjunction:
 		sendPulse = kHighPulse
 		if allHigh:
 			sendPulse = kLowPulse
+			if self.sendLowPulseIdx == -1: 
+				self.sendLowPulseIdx = idx
+
+		self.lastSentPulse=sendPulse
 	
 		res = []
 		for d in self.destinations:
@@ -90,8 +99,6 @@ class Conjunction:
 				self.highCount += 1
 				
 			res.append({'dest':d, 'source':self.name, 'pulse':sendPulse})
-		# print(f"Module:{self.name} received pulse:{pulse} from:{source}")
-		# print(f"     sending: {res}")	
 		return res
 	
 	def setupInputs(self, inputs):
@@ -103,12 +110,12 @@ class RecieverOnly:
 		self.name = name
 		self.lowCount = 0
 		self.highCount = 0
+		self.destinations = []
 		
 	def receivePulse(self, pulse, source, idx):
-		# print(f"Module:{self.name} received pulse:{pulse} from:{source}")
-		# print(f"     sending: {[]}")	
 		return []
 	
+
 def createModules(data):
 	modules = {}
 	conjunctions = []
@@ -149,7 +156,6 @@ def createModules(data):
 
 
 def pulseManager(data):
-	
 	queue = []
 	modules = createModules(data)
 	
@@ -172,44 +178,45 @@ def pulseManager(data):
 		lows += m.lowCount
 		highs += m.highCount
 		
-	print(f"Finales lows:{lows} highs:{highs}")
 	return (lows+1000)*highs
 			
 			
-			
 def computeButtonPressToActivation(data):
-	modules = createModules(data)
-	destToSource = {}
 	queue = []
+	modules = createModules(data)
 
+	# see dataflow in the folder
+	controlFlow = ['jn', 'zp', 'ph', 'mf']
 
-	for i in range(1000):
-		print(i)
-
+	idx = 0
+	while True:
+		idx += 1
 		queue.append({'dest':'broadcaster', 'source':'button', 'pulse':kLowPulse})
-
+		
 		while len(queue) > 0:
 			task = queue.pop(0)
-			# print(f"Working on task: {task}")
 
 			if task['dest'] not in modules:
 				modules[task['dest']] = RecieverOnly(task['dest'])
 
 			obj = modules[task['dest']]
-
-			nextitems = obj.receivePulse(task['pulse'], task['source'], i)
-
+			nextitems = obj.receivePulse(task['pulse'], task['source'], idx)
 			queue = queue + nextitems
 
-		print()
-		print()
+		freqFoundCount = 0
+		for check in controlFlow:
+			if modules[check].sendLowPulseIdx != -1:
+				freqFoundCount += 1
+		if freqFoundCount == len(controlFlow):
+			break
 
+	freqs = []
+	for check in controlFlow:
+		freqs.append(modules[check].sendLowPulseIdx)
 
-	for m in modules:
-		if type(m) == Conjunction:
-			print(f"{m.name}  :  {m.freqCounter}")
-			
+	return math.lcm(*freqs)
 			
 			
 data = readData("large.data")
 print(f"Problem 1: {pulseManager(data)}")
+print(f"Problem 2: {computeButtonPressToActivation(data)}")
