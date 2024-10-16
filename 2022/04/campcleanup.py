@@ -31,6 +31,6 @@ def problem2(lines):
 filename = "day04data01.txt"
 lines = open(filename).readlines()
 
-print(f"2022 Day 03 using file [{filename}]")
+print(f"2022 Day 04 using file [{filename}]")
 problem1(lines)
 problem2(lines)
