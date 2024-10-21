@@ -111,4 +111,5 @@ day = '07'
 filename = f"day{day}data01.txt"
 lines = [aline.strip() for aline in open(filename).readlines()]
 
+print(f"2022 Day {day} using file [{filename}]")
 problems(lines)
