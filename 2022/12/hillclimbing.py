@@ -10,16 +10,27 @@ def findInMap(amap, target):
 				return (x, y)
 	return None
 
-def add_positions(p1, p2):
+def findAllInMap(amap, target):
+	allPos = []
+	h = len(amap)
+	w = len(amap[0])
+	for y in range(h):
+		for x in range(w):
+			if amap[y][x] == target:
+				allPos.append((x, y))
+	return allPos
+
+
+def addPositions(p1, p2):
 	return (p1[0]+p2[0], p1[1]+p2[1])
 
-def sub_positions(p1, p2):
+def subPositions(p1, p2):
 	return (p1[0]-p2[0], p1[1]-p2[1])
 
-def is_in_map(w, h, p):
+def isInMap(w, h, p):
 	return not (p[0]<0 or p[1]<0 or p[0]>=w or p[1]>=h)
 
-def is_pos_in_list(alist, pos):
+def isPosInList(alist, pos):
 	for l in alist:
 		if pos == l.pos:
 			return True
@@ -100,7 +111,7 @@ def printPath(w, h, path):
 
 	pre = path[0]
 	for cur in path[1:]:
-		dxy = sub_positions(cur, pre)
+		dxy = subPositions(cur, pre)
 		area[pre[1]][pre[0]] = symbols[dxy]
 		pre = cur
 
@@ -113,25 +124,25 @@ def printPath(w, h, path):
 
 
 
-def AStar(amap, start_pos, end_pos):
+def AStar(amap, startPos, endPos, skipOnA):
 	h = len(amap)
 	w = len(amap[1])
-	start = AStarNode(start_pos, 0, 0, 0, None)
-	end = AStarNode(end_pos, 0, 0, 0, None)
-
-	printMap(amap)
+	start = AStarNode(startPos, 0, 0, 0, None)
+	end = AStarNode(endPos, 0, 0, 0, None)
 
 	openSet = []
 	openSet.append(start)
 
 	closeSet = []
 
+	firstNode = True
+
 	while len(openSet) > 0:
 		currentNode = min(openSet, key=lambda x: x.F)	
-		print(f"From openSet working with position: {currentNode.pos}")
+		# print(f"From openSet working with position: {currentNode.pos}")
 
 		if currentNode == end:
-			print('**Reached the end')
+			# print('**Reached the end')
 			path = []
 			n = currentNode
 			while n is not None:
@@ -139,38 +150,48 @@ def AStar(amap, start_pos, end_pos):
 				n = n.parent
 
 			path.reverse()
-			print(path)
-			printPath(w, h, path)
-			print("Problem 1: ", len(path)-1) # removing the first place
-			return
+			# print(path)
+			# printPath(w, h, path)
+			# print("Problem 1: ", len(path)-1) # removing the first place
+			return path
 		
 		openSet.remove(currentNode)
 		closeSet.append(currentNode)
 
-		currentElevation = ord(amap[currentNode.pos[1]][currentNode.pos[0]])
+		currentMapChar = amap[currentNode.pos[1]][currentNode.pos[0]]
+		currentElevation = ord(currentMapChar)
+
+		if currentMapChar=='a' and skipOnA==True and firstNode==False:
+			continue
+		firstNode = False
 
 		for delta in [(0, 1), (1, 0), (-1, 0), (0, -1)]:
 			
-			newPos = add_positions(currentNode.pos, delta)
+			newPos = addPositions(currentNode.pos, delta)
 
-			if not is_in_map(w, h, newPos):
-				print(f"    child {newPos} is out of bound")
+			if not isInMap(w, h, newPos):
+				# print(f"    child {newPos} is out of bound")
 				continue
 
-			if is_pos_in_list(closeSet, newPos):
-				print(f"    child {newPos} is already in the close list")
+			if isPosInList(closeSet, newPos):
+				# print(f"    child {newPos} is already in the close list")
 				continue
 
 
 			# check elevation
-			newElevation = ord(amap[newPos[1]][newPos[0]])
+			mapChar = amap[newPos[1]][newPos[0]]
+			if mapChar=='a' and skipOnA==True:
+				continue
+
+			newElevation = ord(mapChar)
 			if newElevation-currentElevation > 1:
-				print(f"    child {newPos} is too high")
+				# print(f"    child {newPos} is too high")
 				continue
 
 
+
 			
-			dxy = sub_positions(newPos, currentNode.pos)
+			dxy = subPositions(newPos, currentNode.pos)
 			newG = currentNode.G + 1
 			newH = dxy[0]**2 + dxy[1]**2
 			newF = newG + newH
@@ -180,9 +201,9 @@ def AStar(amap, start_pos, end_pos):
 			childInOpen = [o for o in openSet if o.pos == newPos]
 			childWasAddedToOpen = False
 			if len(childInOpen) > 0:
-				print(f"    child {newPos} was already found, new G is {newG} vs old G {childInOpen[0].G}")
+				# print(f"    child {newPos} was already found, new G is {newG} vs old G {childInOpen[0].G}")
 				if newG < childInOpen[0].G:
-					print("        ** Replacing with new G and other values")
+					# print("        ** Replacing with new G and other values")
 					childInOpen[0].G = newG
 					childInOpen[0].H = newH
 					childInOpen[0].F = newF
@@ -194,25 +215,52 @@ def AStar(amap, start_pos, end_pos):
 
 
 
+def problem1(amap):
+	# Find the start and end positions
+	# Then replace with the coresponding letters
+	startPos = findInMap(amap, 'S')
+	amap[startPos[1]] = amap[startPos[1]].replace('S', 'a')
+
+	endPos = findInMap(amap, 'E')
+	amap[endPos[1]] = amap[endPos[1]].replace('E', 'z')
+
+	path = AStar(amap, startPos, endPos, False)
+	print(f"Problem 1 path length : {len(path)-1}")
+
+def problem2(amap):
+	allStartPos = findAllInMap(amap, 'a')
+	endPos = findInMap(amap, 'E')
+	amap[endPos[1]] = amap[endPos[1]].replace('E', 'z')
+
+	print(allStartPos)
+	startCount = len(allStartPos)
+
+	shortestLength = 1000000
+	shortestLengthStartPos = None
+
+	for i in range(startCount):
+		print(f"{int(i/startCount*100)}%")
+		startPos = allStartPos[i]
+
+		path = AStar(amap, startPos, endPos, True)
+		if path is not None:
+			if len(path) < shortestLength:
+				shortestLength = len(path)
+				shortestLengthStartPos = startPos
+
+	print(f"Problem 2 path length : {shortestLength-1} from {startPos}")
+
+
+
+
 day = '12'
 # filename = f"day{day}test01.txt"
 filename = f"day{day}data01.txt"
 
-lines = [aline.strip() for aline in open(filename).readlines()]
-
-
-def problems(amap):
-	# Find the start and end positions
-	# Then replace with the coresponding letters
-	start_pos = findInMap(amap, 'S')
-	amap[start_pos[1]] = amap[start_pos[1]].replace('S', 'a')
-
-	end_pos = findInMap(amap, 'E')
-	amap[end_pos[1]] = amap[end_pos[1]].replace('E', 'z')
-
-	AStar(amap, start_pos, end_pos)
-
-
-
 print(f"2022 Day {day} using file [{filename}]")
-problems(lines)
+
+lines = [aline.strip() for aline in open(filename).readlines()]
+problem1(lines)
+
+lines = [aline.strip() for aline in open(filename).readlines()]
+problem2(lines)
