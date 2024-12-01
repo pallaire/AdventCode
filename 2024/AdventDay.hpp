@@ -20,6 +20,8 @@ public:
 	virtual void part2(vector<string> lines);
 
 	void printHeader(unsigned int partNumber, unsigned int dataType);
+	void printLongResult(long res);
+	
 	long long run(unsigned int partNumber);
 	long long runAll();
 	void test(unsigned int partNumber, unsigned int testID);
@@ -27,6 +29,7 @@ public:
 
 protected:
 	unsigned int day;
+	string title;
 	filesystem::path dirPath;
 
 	vector<string> loadData(unsigned int dataType, unsigned int dataSequence);
