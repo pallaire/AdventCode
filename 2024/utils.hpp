@@ -13,6 +13,7 @@ void printRunTime(long us);
 
 // String functions
 vector<string> split(string toparse, string delimiter);
+vector<long> extractLongs(string toparse); 
 
 
 #endif // __UTILS__
