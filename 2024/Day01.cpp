@@ -16,9 +16,9 @@ void Day01::part1(vector<string> lines) {
   vector<long> left, right;
 
   for(const string& line : lines) {
-    vector<string> IDs = split(line, " ");
-    left.push_back(stol(IDs[0]));
-    right.push_back(stol(IDs[1]));
+      vector<long> lr = extractLongs(line);
+      left.push_back(lr[0]);
+      right.push_back(lr[1]);
   }
 
   sort(left.begin(), left.end());
@@ -37,10 +37,11 @@ void Day01::part2(vector<string> lines) {
   map<long, long> rightCount;
 
   for(const string& line : lines) {
-    vector<string> IDs = split(line, " ");
-    left.push_back(stol(IDs[0]));
+      vector<long> lr = extractLongs(line);
 
-    long right = stol(IDs[1]);
+    left.push_back(lr[0]);
+
+    long right = lr[1];
 
     if(rightCount.contains(right)) {
       rightCount[right]++;
