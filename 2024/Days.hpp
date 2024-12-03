@@ -11,7 +11,6 @@ class Day01 : public AdventDay {
     void part2(vector<string> lines);
 };
 
-
 class Day02 : public AdventDay {
   public:
     Day02(string path);
@@ -19,6 +18,13 @@ class Day02 : public AdventDay {
     void part2(vector<string> lines);
   private:
     long isGoodReport(const vector<long> report);
+};
+
+class Day03 : public AdventDay {
+  public:
+    Day03(string path);
+    void part1(vector<string> lines);
+    void part2(vector<string> lines);
 };
 
 #endif //__DAYS__
