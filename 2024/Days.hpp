@@ -27,4 +27,14 @@ class Day03 : public AdventDay {
     void part2(vector<string> lines);
 };
 
+class Day04 : public AdventDay {
+  public:
+    Day04(string path);
+    void part1(vector<string> lines);
+    void part2(vector<string> lines);
+
+  private:
+    unsigned long searchAround(const vector<string>& lines, long w, long h, long x, long y, long dx, long dy, long position);
+};
+
 #endif //__DAYS__

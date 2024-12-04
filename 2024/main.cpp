@@ -18,13 +18,17 @@ void runAllDays(const char* dataPath) {
   Day03* d3 = new Day03(dataPath);
   totalDelta += d3->runAll();
   delete d3;
+
+  Day04* d4 = new Day04(dataPath);
+  totalDelta += d4->runAll();
+  delete d4;
 }
 
 int main(int /* argc */, char ** /* argv */)
 {
 	const char *defaultDataPath = "/home/pallaire/devs/aoc/2024/data";
 
-	Day03 d(defaultDataPath);
+	Day04 d(defaultDataPath);
 	d.testAll(1);
 	d.runAll();
 
