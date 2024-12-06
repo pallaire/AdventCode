@@ -7,7 +7,10 @@ def AoCResult(res):
     print(f"\x1B[30m\x1B[102m   ====>   {res}   \033[0m")
 
 def AoCTiming(delta):
-    print(f"   Timing: {delta*1000:.03}ms")
+    if delta < 1:
+        print(f"   Timing: {delta*1000:.03}ms")
+    else:
+        print(f"   Timing: {delta:.03}s")
 
 def AoCRunner(day, name, fn, istesting):
     AoCHeader(day, name, istesting)
@@ -17,6 +20,7 @@ def AoCRunner(day, name, fn, istesting):
         return
 
     lines = open(f"../data/day{day:02}{'test' if istesting else 'data'}01.txt").readlines()
+    lines = [l.strip() for l in lines]
 
     ts = time.time()
     res = fn(lines)
