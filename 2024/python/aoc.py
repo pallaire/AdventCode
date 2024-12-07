@@ -8,9 +8,9 @@ def AoCResult(res):
 
 def AoCTiming(delta):
     if delta < 1:
-        print(f"   Timing: {delta*1000:.03}ms")
+        print(f"   Timing: {delta*1000:.03f}ms")
     else:
-        print(f"   Timing: {delta:.03}s")
+        print(f"   Timing: {delta:.03f}s")
 
 def AoCRunner(day, name, fn, istesting):
     AoCHeader(day, name, istesting)
