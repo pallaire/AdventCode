@@ -1,0 +1,9 @@
+{
+    "C_Cpp.clang_format_fallbackStyle": "Google",
+    "files.associations": {
+        "chrono": "c",
+        "functional": "c",
+        "*.tcc": "c",
+        "random": "c"
+    }
+}
