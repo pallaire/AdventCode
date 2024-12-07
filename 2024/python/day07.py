@@ -1,5 +1,15 @@
 from aoc import *
 
+def concatNums(a,b):
+    if b < 10:
+        return a*10 + b
+    if b < 100:
+        return a*100 + b
+    if b < 1000:
+        return a*1000 + b
+    return None
+
+
 def compute(target, value, nums):
     lnums = len(nums)
 
@@ -50,7 +60,8 @@ def computeWithConcat(target, value, nums):
         if res != 0:
             return res
 
-    cres = int(str(value) + str(nums[0]))
+    #cres = int(str(value) + str(nums[0]))
+    cres = concatNums(value, nums[0])
     if lnums == 1:
         if cres == target:
             return target
