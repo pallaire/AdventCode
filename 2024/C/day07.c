@@ -83,25 +83,29 @@ int main(int argc, char** argv) {
   long long resPart1 = 0;
   long long resPart2 = 0;
 
-  long long timePart1 = 0;
-  long long timePart2 = 0;
+  long long t1 = timeInMilliseconds();
 
   for(unsigned long idx = 0; idx < lines->lineCount; idx++){
     char* l = lines->lines[idx];
-
     // extract numbers from string
     TextLinesExtractLongLong(l, nums, &count);
-    long long t1 = timeInMilliseconds();
     resPart1 += compute(nums[0], nums[1], &nums[1], count-1, 1, false);
-    long long t2 = timeInMilliseconds();
-    timePart1 += t2-t1;
-    resPart2 += compute(nums[0], nums[1], &nums[1], count-1, 1, true);
-    long long t3 = timeInMilliseconds();
-    timePart2 += t3-t2;
   }
 
-  printf("Part 1 : %llu -- in %llums\n", resPart1, timePart1);
-  printf("Part 2 : %llu -- in %llums\n", resPart2, timePart2);
+  long long t2 = timeInMilliseconds();
+
+  for(unsigned long idx = 0; idx < lines->lineCount; idx++){
+    char* l = lines->lines[idx];
+    // extract numbers from string
+    TextLinesExtractLongLong(l, nums, &count);
+    resPart2 += compute(nums[0], nums[1], &nums[1], count-1, 1, true);
+  }
+  long long t3 = timeInMilliseconds();
+
+
+
+  printf("Part 1 : %llu -- in %llums\n", resPart1, t2-t1);
+  printf("Part 2 : %llu -- in %llums\n", resPart2, t3-t2);
 
   TextLinesFree(lines);
 
