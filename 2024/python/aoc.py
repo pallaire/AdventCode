@@ -7,7 +7,11 @@ def AoCResult(res):
     print(f"\x1B[30m\x1B[102m   ====>   {res}   \033[0m")
 
 def AoCTiming(delta):
-    if delta < 1:
+    if delta < 0.000001:
+        print("   Timing:")
+    elif delta < 0.001:
+        print(f"   Timing: {delta*1000000:.01f}µs")
+    elif delta < 1:
         print(f"   Timing: {delta*1000:.03f}ms")
     else:
         print(f"   Timing: {delta:.03f}s")
