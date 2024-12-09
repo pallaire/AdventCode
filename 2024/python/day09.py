@@ -3,58 +3,36 @@ from aoc import *
 
 def part1(lines):
     line = lines[0]
+    disk = []
+    id = 0
+    for i, c in enumerate(line):
+        if i&1 == 0:
+            disk.extend([id]*int(c))
+            id += 1
+        else:
+            disk.extend(['.']*int(c))
+
     res = 0
-    fwd = 0
-    bck = len(line)-1
-
-    if len(line) & 1 == 0:
-        #even line length, skip the last space
-        bck -= 1
-
-    defragpos = 0
-    backBufferFileLength = 0
-    backBufferFileID = 0
-
-    while(fwd <= bck):
-        # get file
-        filelength = int(line[fwd])
-        fileid = int(fwd / 2)
-        fwd += 1
-
-        # add value of file to res
-        for _ in range(filelength):
-            res += defragpos*fileid
-            defragpos += 1
-
-        # get the space
-        spacelength = int(line[fwd])
-        fwd += 1
-
-        # from the back get the last file and add it to a buffer
-        # we will take 1 postion of the buffer at a time
-        for _ in range(spacelength):
-            if backBufferFileLength == 0:
-                if bck >= fwd+2:
-                    backBufferFileLength = int(line[bck])
-                    backBufferFileID = int(bck / 2)
-                    bck -= 2
-
-            if backBufferFileLength > 0:
-                res += defragpos*backBufferFileID
-                defragpos += 1
-                backBufferFileLength -= 1
-            else:
-                # we are done with space at the end
+    idx = 0
+    while True:
+        if disk[0] != '.':
+            res += disk.pop(0)*idx
+            idx += 1
+            if len(disk) == 0:
                 break
-    
-    # if the back buffer is not fully emptied, 
-    # put the remaining file at the end
-    if backBufferFileLength > 0:
-        for _ in range(backBufferFileLength):
-            res += defragpos*backBufferFileID
-            defragpos += 1
-            backBufferFileLength -= 1
+        if disk[-1] == '.':
+            disk.pop()
+            if len(disk) == 0:
+                break
+        if disk[0]=='.' and disk[-1]!='.':
+            res += disk.pop()*idx
+            disk.pop(0)
+            idx += 1
+        if len(disk) == 0:
+            break
+
     return res
+
 
 def part2(lines):
     line = lines[0]
