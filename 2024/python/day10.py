@@ -19,8 +19,7 @@ def walk(topo, w, h, x, y, target):
         res.extend(walk(topo, w, h, x+d[0], y+d[1], target+1))
     return res
 
-
-def part1(lines):
+def findTrails(lines):
     h = len(lines)
     w = len(lines[1])
 
@@ -34,15 +33,25 @@ def part1(lines):
                 heads.append((x,y))
 
     # for each head find paths:
-    res = 0
+    trails = []
     for hd in heads:
-        trails = walk(lines, w, h, hd[0], hd[1], 0)
-        res += len(set(trails))
+        trails.append(walk(lines, w, h, hd[0], hd[1], 0))
+    return trails
+
+def part1(lines):
+    trails = findTrails(lines)
+    res = 0
+    for t in trails:
+        res += len(set(t))
     return res
 
 
 def part2(lines):
-    return 0
+    trails = findTrails(lines)
+    res = 0
+    for t in trails:
+        res += len(t)
+    return res
 
 
 AoCRunnerAll(10, 'Hoof It', part1, part2)
