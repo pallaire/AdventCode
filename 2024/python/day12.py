@@ -50,15 +50,10 @@ def perimeter(region):
 
 def sides(region):
     res = 0
-    minx = 1000
-    miny = 1000
-    maxx = 0
-    maxy = 0
-    for r in region:
-        minx = min(minx, r[0])
-        miny = min(miny, r[1])
-        maxx = max(maxx, r[0])
-        maxy = max(maxy, r[1])
+    minx = min(r[0] for r in region)
+    miny = min(r[1] for r in region)
+    maxx = max(r[0] for r in region)
+    maxy = max(r[1] for r in region)
 
     # from left to right
     for x in range(minx, maxx+1):
