@@ -21,15 +21,20 @@ def part1(lines):
 	l = 0
 	res = 0
 	
-	# These are linear equations, but resolving them 
+	# This is linear algebra
+    # 2 equations with 2 variables
 	# Button A: X+94, Y+34
 	# Button B: X+22, Y+67
 	# Prize: X=8400, Y=5400
+    #
+    # First equation resolve for X, the second for Y
+    # 94X + 22X = 8400
+    # 34Y + 67Y = 5400
 	
 	while l+2 < llen:
-		(xa, ya) = [int(x) for x in re.findall("\d+", lines[l+0])]					
-		(xb, yb) = [int(x) for x in re.findall("\d+", lines[l+1])]					
-		(dx, dy) = [int(x) for x in re.findall("\d+", lines[l+2])]
+		(xa, ya) = [int(x) for x in re.findall("\\d+", lines[l+0])]					
+		(xb, yb) = [int(x) for x in re.findall("\\d+", lines[l+1])]					
+		(dx, dy) = [int(x) for x in re.findall("\\d+", lines[l+2])]
 		l += 4 # we need to skip the blank line as well
 
 		# btnA*xa + btnB*xb = dx
@@ -84,9 +89,9 @@ def part2(lines):
 	res = 0
 	
 	while l+2 < llen:
-		(xa, ya) = [int(x) for x in re.findall("\d+", lines[l+0])]					
-		(xb, yb) = [int(x) for x in re.findall("\d+", lines[l+1])]					
-		(dx, dy) = [int(x) for x in re.findall("\d+", lines[l+2])]
+		(xa, ya) = [int(x) for x in re.findall("\\d+", lines[l+0])]					
+		(xb, yb) = [int(x) for x in re.findall("\\d+", lines[l+1])]					
+		(dx, dy) = [int(x) for x in re.findall("\\d+", lines[l+2])]
 		l += 4 # we need to skip the blank line as well
 
 		dx += 10000000000000
