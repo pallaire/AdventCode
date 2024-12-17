@@ -9,20 +9,8 @@ dirs = [(0,-1), (1,0), (0,1), (-1,0)]
 invdirs = {(0,-1):0, (1,0):1, (0,1):2, (-1,0):3}
 dirsChar = ['^','>','v','<']
 
-def printMaze(maze, rx, ry, d):
-    for y in range(len(maze)):
-        for x in range(len(maze[0])):
-            c = maze[y][x]
-
-            if rx==x and ry==y:
-                print(dirsChar[d], end='')
-            else:
-                print(c, end='')
-        print()
-
 def printPathInMaze(inmaze, path):
     maze = [list(m) for m in inmaze]
-
     prev = path[0]
     maze[path[0][1]][path[0][0]] = 'S'
 
@@ -31,15 +19,9 @@ def printPathInMaze(inmaze, path):
         dy = p[1] - prev[1]
         cd = invdirs[(dx, dy)]
         maze[p[1]][p[0]] = dirsChar[cd]
-
         prev = p
 
     [print(''.join(m)) for m in maze]
-
-
-
-    
-
 
 def addPositions(p1, p2):
     return (p1[0]+p2[0], p1[1]+p2[1])
@@ -47,11 +29,17 @@ def addPositions(p1, p2):
 def subPositions(p1, p2):
     return (p1[0]-p2[0], p1[1]-p2[1])
 
-def isPosInList(alist, pos):
+def findPosInList(alist, pos):
     for l in alist:
-        if pos == l.pos:
-            return True
-    return False
+        if l.pos == pos:
+            return l
+    return None
+
+def indexPosInList(alist, pos):
+    for i, l in enumerate(alist):
+        if l.pos == pos:
+            return i
+    return -1
 
 class AStarNode:
     def __init__(self, pos, di, F, G, H, parent):
@@ -63,11 +51,13 @@ class AStarNode:
         self.parent = parent
 
     def __eq__(self, other):
-        return self.pos == other.pos
+        if type(other) == AStarNode:
+            return self.pos == other.pos
+        else:
+            return self.pos == other
     
     def __str__(self):
         return f"A*  pos:{self.pos} dir:{self.dir} F:{self.F} G:{self.G} H:{self.H} "
-
 
 def AStar(amap, startPos, endPos):
     start = AStarNode(startPos, 1, 0, 0, 0, None)
@@ -79,34 +69,21 @@ def AStar(amap, startPos, endPos):
 
     while len(openSet) > 0:
         currentNode = min(openSet, key=lambda x: x.F)	
-        # print(f"From openSet working with position: {currentNode.pos}")
-
-        if currentNode.pos == (9,29):
-            print("Check openset")
-            # for o in openSet:
-            #     print(o)
 
         if currentNode == end:
-            print(f"**Reached the end {currentNode.G}")
             path = []
             n = currentNode
             while n is not None:
                 path.append(n.pos)
                 n = n.parent
-
             path.reverse()
-            print(path)
-            # printPath(w, h, path)
-            # print("Problem 1: ", len(path)-1) # removing the first place
-            return path
+            return {'cost': currentNode.G, 'path':path}
         
         openSet.remove(currentNode)
         closeSet.append(currentNode)
 
-        for d in [0, 1, -1]:
-            newDir = (currentNode.dir + 4 - d)%4
-        # for d in range(4): # for each direction
-        #     newDir = (currentNode.dir + d)%4
+        for d in range(4): # for each direction
+            newDir = (currentNode.dir + d)%4
             delta = dirs[newDir]
             
             newPos = addPositions(currentNode.pos, delta)
@@ -114,7 +91,7 @@ def AStar(amap, startPos, endPos):
             if amap[newPos[1]][newPos[0]] == '#':
                 continue
 
-            if isPosInList(closeSet, newPos):
+            if findPosInList(closeSet, newPos) != None:
                 continue
             
             changeMoveAndDirCost = 1
@@ -123,81 +100,19 @@ def AStar(amap, startPos, endPos):
                 changeMoveAndDirCost = 1001
 
             newG = currentNode.G + changeMoveAndDirCost
-
             dxy = subPositions(newPos, endPos)
-            # newH = dxy[0]**2 + dxy[1]**2
             newH = abs(dxy[0]) + abs(dxy[1])
             newF = newG + newH
 
             # check if child as been discovered, and if so 
             # did we just get to it with a shorter path? 
-            for i in range(len(openSet)):
-                if newPos == openSet[i].pos:
-                   if newG < openSet[i].G:
-                       del openSet[i]
-                       break
+            foundIdx = indexPosInList(openSet, newPos)
+            if foundIdx != -1:
+                if newG < openSet[foundIdx].G:
+                    del openSet[foundIdx]
 
             openSet.append(AStarNode(newPos, newDir, newF, newG, newH, currentNode))
-
-def pathCost(path, start, startdir):
-    res = 0
-    prev = start
-    prevDir = startdir
-    for p in path[1:]:
-        dx = p[0] - prev[0]
-        dy = p[1] - prev[1]
-        cd = invdirs[(dx, dy)]
-
-        if cd != prevDir:
-            res += 1000
-        res += 1
-
-        prev = p
-        prevDir = cd
-    return res
-
-wrong = 999999999999999
-mincost = 0
-def recumaze(maze, pos, dr, end, cost, path):
-    global mincost
-    if cost > mincost:
-        return wrong
-
-    # Are we at the end? If so, return the cost
-    if pos == end:
-        print(f"Found End at cost: {cost}  @  {pos}")
-        # print(path)
-        mincost = cost
-        return cost
-    
-    if pos in path:
-        return wrong
-    
-    (x, y) = pos
-    if maze[y][x] == '#':
-        return wrong
-    
-    path.add(pos)    
-    
-    # Can we step forward? cheapest
-    delta = dirs[dr]
-    newpos = (x+delta[0], y+delta[1])
-    resfwd = recumaze(maze, newpos, dr, end, cost+1, path)
-
-    leftdr = (dr+4-1)%4
-    delta = dirs[leftdr]
-    newpos = (x+delta[0], y+delta[1])
-    reslft = recumaze(maze, newpos, leftdr, end, cost+1001, path)
-
-    rghtdr = (dr+1)%4
-    delta = dirs[rghtdr]
-    newpos = (x+delta[0], y+delta[1])
-    resrgt = recumaze(maze, newpos, rghtdr, end, cost+1001, path)
-
-    path.remove(pos)
-
-    return min(resfwd, reslft, resrgt)
-
+    print("ERROR AStar didn't find the end")
 
 def dijkstra(maze, start, end):
     h = len(maze)
@@ -246,7 +161,7 @@ def dijkstra(maze, start, end):
                 idx = mazeprev[idx]                
                 path.append((idx%w, idx//w))
             path.reverse()
-            return (path, mincost)
+            return {'cost': mincost, 'path':path}
 
         unvisited.remove(minidx)
         visited.add(minidx)
@@ -281,7 +196,6 @@ def dijkstra(maze, start, end):
                 mazedir[newidx] = newd
 
 
-
 def part1(lines):
     global mincost
     h = len(lines)
@@ -291,18 +205,10 @@ def part1(lines):
     ex = w - 2
     ey = 1
 
-    apath = AStar(lines, (sx, sy), (ex, ey))
-    # printPathInMaze(lines, path)
-    # return pathCost(path, (sx, sy), 1)
+    # astarRes = AStar(lines, (sx, sy), (ex, ey))
+    dijkstraRes = dijkstra(lines, (sx, sy), (ex, ey))
 
-    (path, cost) = dijkstra(lines, (sx, sy), (ex, ey))
-    
-    print("****************************")
-    print(apath)
-    print(path)
-    
-    # printPathInMaze(lines, path)
-    return cost
+    return dijkstraRes['cost']
 
 def part2(lines):
     res = 0
