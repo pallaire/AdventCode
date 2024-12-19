@@ -27,7 +27,7 @@ def AoCRunner(day, name, fn, istesting):
     lines = [l.strip() for l in lines]
 
     ts = time.time()
-    res = fn(lines)
+    res = fn(lines, istesting)
     te = time.time()
     AoCResult(res)
     AoCTiming(te-ts)
