@@ -110,22 +110,21 @@ def part1(lines, istesting):
     cheats = set()
     dijkstraRes = dijkstra(lines, start, end, -1, cheats)
     maxcost = dijkstraRes['cost']
-    oripath = dijkstraRes['path']
-    oripathset = set(oripath)
+    pathdict = {}
+    for i,p in enumerate(dijkstraRes['path']):
+        pathdict[p] = i
     
-    print(f"maxcost: {maxcost}, path length: {len(oripath)}")
+    print(f"maxcost: {maxcost}, path length: {len(dijkstraRes['path'])}")
     dirs = [(0,-1), (1,0), (0,1), (-1,0)]
     res = 0
     
-    for idxp, p in enumerate(oripath):
+    for p in dijkstraRes['path']:
         for d in dirs:
             cheatwall = (p[0]+d[0], p[1]+d[1]) 
-            if lines[cheatwall[1]][cheatwall[0]] == '#':
-                cheatpos = (p[0]+d[0]*2, p[1]+d[1]*2)
-                if cheatpos in oripathset:
-                    cheatidx = oripath.index(cheatpos)
-                    if cheatidx-idxp-2 >= 100: # -2 is for the wall crossing
-                        res += 1
+            cheatpos = (p[0]+d[0]*2, p[1]+d[1]*2)
+            if (cheatwall not in pathdict) and (cheatpos in pathdict):
+                if pathdict[cheatpos]-pathdict[p]-2 >= 100: # -2 is for the wall crossing
+                    res += 1
     return res
 
 def part2(lines, istesting):
