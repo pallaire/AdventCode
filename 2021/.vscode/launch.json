@@ -7,7 +7,8 @@
       "request": "launch",
       "program": "${workspaceFolder}/day${input:dayNumber}",
       "args": [],
-      "stopAtEntry": true,                // helps confirm it actually launches
+    //   "args": ["-t", "01"],
+      "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,           // avoid “hanging” on a missing console
@@ -27,7 +28,7 @@
       "id": "dayNumber",
       "type": "promptString",
       "description": "Enter the day number (01..24)",
-      "default": "01"
+      "default": "02"
     }
   ]
 }
