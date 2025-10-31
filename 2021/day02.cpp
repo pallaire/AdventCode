@@ -12,7 +12,7 @@ int main (int argc, char** argv) {
   cout << "Running Day number > " << DAY_NUM << std::endl;
   
   PChrono apptiming("Main");
-  PFile file(PFile::getDataPathFromArgs(argc, argv));
+  PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
   vector<string> lines = file.getDataOfStrings();
 
 

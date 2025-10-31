@@ -17,7 +17,7 @@ public:
   vector<string> getDataOfStrings();
   vector<long> getDataOfNumbers();
 
-  static string getDataPathFromArgs(int argc, char** argv);
+  static string getDataPathFromArgs(int argc, char** argv, unsigned int day);
 
 private:
   string _filepath;

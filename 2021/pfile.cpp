@@ -47,12 +47,12 @@ char* PFile::getRawData() {
   return _data;
 }
 
-string PFile::getDataPathFromArgs(int argc, char** argv) {
-  string path = format("./data/day{:02d}.txt", DAY_NUM);
+string PFile::getDataPathFromArgs(int argc, char** argv, unsigned int day) {
+  string path = format("./data/day{:02d}.txt", day);
 
   for(int a = 0; a < argc; a++) {
     if(strcmp(argv[a], "-t") == 0 && a < argc-1) {
-      path = format("./data/day{:02d}_test{:02d}.txt", DAY_NUM, atoi(argv[a+1]));
+      path = format("./data/day{:02d}_test{:02d}.txt", day, atoi(argv[a+1]));
       break;
     }
   }
