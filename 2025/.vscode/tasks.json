@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build dayXX (Release)",
+      "type": "shell",
+      "command": "make",
+      "args": ["DAY=${input:dayNumber}", "RELEASE=1"],
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Build dayXX (Debug)",
+      "type": "shell",
+      "command": "make",
+      "args": ["DAY=${input:dayNumber}", "DEBUG=1"],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Clean",
+      "type": "shell",
+      "command": "make",
+      "args": ["clean"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "dayNumber",
+      "type": "promptString",
+      "description": "Enter the day number (01..24)",
+      "default": "02"
+    }
+  ]
+}
