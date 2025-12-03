@@ -17,10 +17,12 @@ DAY_SRC := day$(DAY).cpp
 COMMON_SRCS := pchrono.cpp pfile.cpp putils.cpp
 # Example:
 # COMMON_SRCS := pchrono.cpp utils.cpp helpers.cpp
-
+BUILD_DIR := build
 SRCS   := $(DAY_SRC) $(COMMON_SRCS)
-OBJS   := $(SRCS:.cpp=.o)
+OBJS := $(addprefix $(BUILD_DIR)/,$(SRCS:.cpp=.o))
+DEPS := $(OBJS:.o=.d)
 TARGET := day$(DAY)
+
 
 # ---- Flags ----
 STD      := -std=c++20
@@ -38,12 +40,14 @@ endif
 
 # ---- Rules ----
 .PHONY: all clean run gdb
+
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-%.o: %.cpp
+$(BUILD_DIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 run: $(TARGET)
@@ -55,8 +59,7 @@ gdb: $(TARGET)
 	gdb -tui ./$(TARGET)
 
 clean:
-	rm -f day?? *.o *.d
+	rm -rf $(BUILD_DIR) day?? 
 
-# Auto-include generated dependencies
--include $(OBJS:.o=.d)
-
+# Include auto-generated dependencies
+-include $(DEPS)

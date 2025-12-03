@@ -1,3 +1,6 @@
+# C / C++ or other Executables
+day[0-9][0-9]
+
 # Advent of Code
 *.txt
 
