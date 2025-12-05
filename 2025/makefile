@@ -6,7 +6,7 @@
 #   make gdb DAY=05
 #   make clean
 
-CXX := g++
+DETECTED_OS := $(shell uname -s)
 
 # ---- Choose the day file to build ----
 DAY ?= 0X
@@ -23,6 +23,12 @@ OBJS := $(addprefix $(BUILD_DIR)/,$(SRCS:.cpp=.o))
 DEPS := $(OBJS:.o=.d)
 TARGET := day$(DAY)
 
+ifeq ($(DETECTED_OS),Darwin)
+	CXX := clang++
+	ARCHFLAGS := -march=native -mcpu=apple-m4
+else 
+	CXX := g++
+endif
 
 # ---- Flags ----
 STD      := -std=c++20
@@ -31,11 +37,11 @@ DEPFLAGS := -MMD -MP
 BASE     := $(STD) $(WARN) $(DEPFLAGS) -DDAY_NUM=$(DAY)
 
 # Default Debug build: make DEBUG=1
-CXXFLAGS := $(BASE) -O0 -g -fno-omit-frame-pointer -DDEBUG
+CXXFLAGS := $(BASE) -O0 -g -fno-omit-frame-pointer -DDEBUG $(ARCHFLAGS)
 
 ifeq ($(RELEASE),1)
 	# Optimized build (fast)
-	CXXFLAGS := $(BASE) -O3 -ffast-math -DNDEBUG -DRELEASE 
+	CXXFLAGS := $(BASE) -O3 -ffast-math -DNDEBUG -DRELEASE $(ARCHFLAGS)
 endif
 
 # ---- Rules ----
