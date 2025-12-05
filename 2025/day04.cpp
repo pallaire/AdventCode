@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
     i64 dy[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 
     for(i64 y = 0; y < h; y++) {
-      for(i64 x = 0; x < h; x++) {
+      for(i64 x = 0; x < w; x++) {
 
         // we need to check only paperroll positions.
         if(lines[y][x] != '@') {
@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
       prevres = res;
 
       for(i64 y = 0; y < h; y++) {
-        for(i64 x = 0; x < h; x++) {
+        for(i64 x = 0; x < w; x++) {
 
           // we need to check only paperroll positions.
           if(lines[y][x] != '@') {
