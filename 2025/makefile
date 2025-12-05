@@ -14,7 +14,7 @@ DAY_SRC := day$(DAY).cpp
 
 # ---- Common sources compiled/linked alongside the day file ----
 # Space-separated list; add more as needed.
-COMMON_SRCS := pchrono.cpp pfile.cpp putils.cpp
+COMMON_SRCS := p2dmap.cpp pchrono.cpp pfile.cpp putils.cpp
 # Example:
 # COMMON_SRCS := pchrono.cpp utils.cpp helpers.cpp
 BUILD_DIR := build
