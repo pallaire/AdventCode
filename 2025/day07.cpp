@@ -1,7 +1,7 @@
 #include <iostream>
+#include <map>
 #include <set>
 #include <string>
-#include <vector>
 
 #include "p2dmap.h"
 #include "pchrono.h"
@@ -10,22 +10,41 @@
 
 using namespace std;
 
-// int walkmap(const P2DMap map, u64 w, u64 h, u64 x, u64 y) {
-//     if(y >= h-1) {
-//         return 1;
-//     }
+map<pair<i64, i64>, u64> part2cache;
 
-//     u64 res = 0;
+u64 climb(const P2DMap map, u64 w, u64 h, i64 x, i64 y) {
+  pair<i64, i64> key(x, y);
 
-//     if(map[y][x] == '^') {
-//         res += walkmap(map, w, h, x-1, y+1);
-//         res += walkmap(map, w, h, x+1, y+1);
-//     } else {
-//         res += walkmap(map, w, h, x, y+1);
-//     }
+  if(part2cache.contains(key)) {
+    return part2cache[key];
+  }
 
-//     return res;
-// }
+  if(map[y][x] == 'S') {
+    return 1;
+  } 
+
+  if(y < 0) {
+    return 0;
+  }
+
+  u64 res = 0;
+
+  if(map[y][x+1] == '^') {
+    res += climb(map, w, h, x+1, y-2);
+  }
+
+  if(map[y][x-1] == '^') {
+    res += climb(map, w, h, x-1, y-2);
+  }
+ 
+  if(map[y][x] != '^') {
+    res += climb(map, w, h, x, y-2);
+  }
+
+  part2cache[key] = res;
+
+  return res;
+}
 
 
 int main(int argc, char** argv) {
@@ -35,8 +54,6 @@ int main(int argc, char** argv) {
     P2DMap map(file.getRawData(), file.getSize());
     u64 w = map.getWidth();
     u64 h = map.getHeight();
-
-
 
     PChrono* p1timing = new PChrono("Problem1");
     u64 res = 0;
@@ -82,47 +99,16 @@ int main(int argc, char** argv) {
 
     PChrono* p2timing = new PChrono("Problem2");
     res = 0;
-    // res = walkmap(map, w, h, sx, 0);
-    beams.clear();
-    beams.insert(sx);
 
-    // set<pair<u64, u64>> timelines;
-    // timelines.insert({sx, 0});
-    vector<pair<u64, u64>> timelines;
-    timelines.push_back({sx, 0});
-
-    for(u64 y = 1; y < h; y++) {
-        if((y&1) == 1) {
-            continue;
-        }
-
-        newbeams.clear();
-
-        for(auto b : beams) {
-            if(map[y][b] == '^') {
-                // split
-                newbeams.insert(b-1);
-                newbeams.insert(b+1);
-                // timelines.insert({b-1, y});
-                // timelines.insert({b+1, y});
-                timelines.push_back({b-1, y});
-                timelines.push_back({b+1, y});
-            } else {
-                // no split, go down
-                newbeams.insert(b);
-            }
-        }
-        
-        beams = newbeams;
+    // Start on the last line and go up for all the paths 
+    for(u64 x = 0; x < w; x++) {
+      res += climb(map, w, h, x, h-2);
     }
-
-    res = timelines.size();
-
-
 
     cout << "Result 2 : " << res << std::endl;
     delete p2timing;
 
+    
     return 0;
 }
 

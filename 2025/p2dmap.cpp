@@ -23,6 +23,9 @@ P2DMap::P2DMap(char* rawdata, u64 size) {
             h++;
         }
     }
+
+    // + 1 line since we don't support empty lines
+    h++;
 }
 
 P2DMap::~P2DMap() {
