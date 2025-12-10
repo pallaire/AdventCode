@@ -111,3 +111,7 @@ vector<long> PFile::getDataOfNumbers() {
 
   return res;
 }
+
+bool PFile::getIsTestFile() {
+  return _filepath.find("_test") != std::string::npos;
+}

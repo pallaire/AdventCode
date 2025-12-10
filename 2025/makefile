@@ -9,7 +9,7 @@
 DETECTED_OS := $(shell uname -s)
 
 # ---- Choose the day file to build ----
-DAY ?= 0X
+DAY ?= X
 DAY_SRC := day$(DAY).cpp
 
 # ---- Common sources compiled/linked alongside the day file ----

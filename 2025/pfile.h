@@ -16,6 +16,7 @@ public:
   char* getRawData();
   vector<string> getDataOfStrings(bool keepEmptyLines=false);
   vector<long> getDataOfNumbers();
+  bool getIsTestFile();
 
   static string getDataPathFromArgs(int argc, char** argv, unsigned int day);
 
@@ -23,6 +24,7 @@ private:
   string _filepath;
   long long _size;
   char* _data;  
+  bool _test;
 };
 
 #endif
