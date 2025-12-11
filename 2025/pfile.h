@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include "ptypes.h"
+
 using namespace std;
 
 class PFile {
@@ -12,17 +14,17 @@ public:
   PFile(string filepath);
   ~PFile();
 
-  long long getSize();
+  u64 getSize();
   char* getRawData();
   vector<string> getDataOfStrings(bool keepEmptyLines=false);
-  vector<long> getDataOfNumbers();
+  vector<u64> getDataOfNumbers();
   bool getIsTestFile();
 
-  static string getDataPathFromArgs(int argc, char** argv, unsigned int day);
+  static string getDataPathFromArgs(int argc, char** argv, u64 day);
 
 private:
   string _filepath;
-  long long _size;
+  u64 _size;
   char* _data;  
 };
 

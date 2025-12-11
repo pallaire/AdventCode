@@ -7,6 +7,7 @@
 
 #include "pfile.h"
 
+
 PFile::PFile(string filepath) {
   _filepath = filepath;
   _size = 0;
@@ -39,7 +40,7 @@ PFile::~PFile() {
   }
 }
 
-long long PFile::getSize() {
+u64 PFile::getSize() {
   return _size;
 }
 
@@ -47,7 +48,7 @@ char* PFile::getRawData() {
   return _data;
 }
 
-string PFile::getDataPathFromArgs(int argc, char** argv, unsigned int day) {
+string PFile::getDataPathFromArgs(int argc, char** argv, u64 day) {
   string path = format("./data/day{:02d}.txt", day);
 
   for(int a = 0; a < argc; a++) {
@@ -65,7 +66,7 @@ vector<string> PFile::getDataOfStrings(bool keepEmptyLines) {
 
   char* start = nullptr;
 
-  for(int i = 0; i < _size; i++) {
+  for(u64 i = 0; i < _size; i++) {
     if(_data[i] == '\n' || _data[i] == 0) {
       if(start == nullptr) {
         if(keepEmptyLines) {
@@ -89,13 +90,13 @@ vector<string> PFile::getDataOfStrings(bool keepEmptyLines) {
   return res;
 }
 
-vector<long> PFile::getDataOfNumbers() {
-  vector<long> res;
+vector<u64> PFile::getDataOfNumbers() {
+  vector<u64> res;
 
   char* start = nullptr;
 
-  for(int i = 0; i < _size; i++) {
-    if(_data[i] == '\n' || _data[i] == 0) {
+  for(u64 i = 0; i < _size; i++) {
+    if(_data[i] < '0' || _data[i] > '9') {
       _data[i] = 0;
       res.push_back(atol(start));
       _data[i] = '\n';
