@@ -24,7 +24,6 @@ private:
   string _filepath;
   long long _size;
   char* _data;  
-  bool _test;
 };
 
 #endif
