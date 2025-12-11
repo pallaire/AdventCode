@@ -19,6 +19,7 @@ public:
         y = 0;
         z = 0;
         scanInput(in, size, pIDX);
+        connected = false;
     };
 
     ~Pos3D() {};
@@ -73,6 +74,7 @@ public:
 
     string name;
     u64 x, y, z;
+    bool connected;
 
 };
 
@@ -119,19 +121,45 @@ int main(int argc, char** argv) {
     set<string> connected;
     vector<tuple<u64, Pos3D*, Pos3D*>> limited;
     u64 found = 0;
+    u64 found2 = 0;
 
     for(auto d : distances) {
-        if( (connected.contains(get<1>(d)->name) == false) && (connected.contains(get<2>(d)->name) == false)) {
+        if( (connected.contains(get<1>(d)->name) == false) || (connected.contains(get<2>(d)->name) == false)) {
             found++;
 
-            limited.push_back(d);
-                        
-            if(found == shortestCount) {
-                // we have enough
+            // cout << get<1>(d)->name << " -- " << get<1>(d)->name << std::endl;
+
+
+            // connected.insert(get<1>(d)->name);
+            // connected.insert(get<2>(d)->name);
+
+            if(found <= shortestCount) {
+                limited.push_back(d);
+                            
+                // if(found == shortestCount) {
+                //     // we have enough
+                //     break;
+                // }
+            }
+
+            if(!get<1>(d)->connected) {
+                get<1>(d)->connected = true;
+                found2++;
+            }
+
+            if(!get<2>(d)->connected) {
+                get<2>(d)->connected = true;
+                found2++;
+            }
+
+            if(found2 == positions.size()) {
+                cout << "Res 2 : " << (get<1>(d)->x * get<2>(d)->x) << std::endl;
                 break;
             }
         }
     }
+
+    cout << "Connection found : " << found << std::endl;
 
     // now create circuit
     vector<u64> circuitsizes;
