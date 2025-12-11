@@ -65,7 +65,7 @@ gdb: $(TARGET)
 	gdb -tui ./$(TARGET)
 
 clean:
-	rm -rf $(BUILD_DIR) day?? 
+	rm -rf $(BUILD_DIR) day?? day?
 
 # Include auto-generated dependencies
 -include $(DEPS)

@@ -22,8 +22,6 @@ public:
         connected = false;
     };
 
-    ~Pos3D() {};
-
     void scanInput(char* in, u64 size, u64* pIDX) {
         u64 work = 0;
         for(u64 i = *pIDX; i < size; i++) {
@@ -53,14 +51,6 @@ public:
         *pIDX = size + 1;
     }
 
-    string concat(const Pos3D& b) {
-        if(name < b.name) {
-            return name + "_" + b.name;
-        } else {
-            return b.name + "_" + name;
-        }
-    }
-
     u64 distance(const Pos3D& b) {
         u64 dx = x - b.x;
         u64 dy = y - b.y;
@@ -75,7 +65,6 @@ public:
     string name;
     u64 x, y, z;
     bool connected;
-
 };
 
 
@@ -88,6 +77,7 @@ int main(int argc, char** argv) {
 
     PChrono* p1timing = new PChrono("Problem1");
     u64 res = 1;
+    u64 res2 = 0;
 
     // Parse all the position
     char* data = file.getRawData();
@@ -118,51 +108,35 @@ int main(int argc, char** argv) {
 
 
     // Now gather only 1000 ( 10 for the test ) of the smallest connections
-    set<string> connected;
     vector<tuple<u64, Pos3D*, Pos3D*>> limited;
     u64 found = 0;
     u64 found2 = 0;
 
     for(auto d : distances) {
-        if( (connected.contains(get<1>(d)->name) == false) || (connected.contains(get<2>(d)->name) == false)) {
+        if(found < shortestCount) {
             found++;
+            limited.push_back(d);
+        }
 
-            // cout << get<1>(d)->name << " -- " << get<1>(d)->name << std::endl;
+        if(!get<1>(d)->connected) {
+            get<1>(d)->connected = true;
+            found2++;
+        }
 
+        if(!get<2>(d)->connected) {
+            get<2>(d)->connected = true;
+            found2++;
+        }
 
-            // connected.insert(get<1>(d)->name);
-            // connected.insert(get<2>(d)->name);
-
-            if(found <= shortestCount) {
-                limited.push_back(d);
-                            
-                // if(found == shortestCount) {
-                //     // we have enough
-                //     break;
-                // }
-            }
-
-            if(!get<1>(d)->connected) {
-                get<1>(d)->connected = true;
-                found2++;
-            }
-
-            if(!get<2>(d)->connected) {
-                get<2>(d)->connected = true;
-                found2++;
-            }
-
-            if(found2 == positions.size()) {
-                cout << "Res 2 : " << (get<1>(d)->x * get<2>(d)->x) << std::endl;
-                break;
-            }
+        if(found2 == positions.size()) {
+            res2 =  (get<1>(d)->x * get<2>(d)->x);
+            break;
         }
     }
 
-    cout << "Connection found : " << found << std::endl;
-
     // now create circuit
     vector<u64> circuitsizes;
+    set<string> connected;
 
     while(limited.size() > 0) {
         connected.clear();
@@ -178,8 +152,8 @@ int main(int argc, char** argv) {
             found = false;
 
             for(u64 l = 0; l < limited.size(); l++) {
-                string from = get<1>(limited[l])->name;
-                string to = get<2>(limited[l])->name;
+                string& from = get<1>(limited[l])->name;
+                string& to = get<2>(limited[l])->name;
 
                 if(connected.contains(from) || connected.contains(to)) {
                     found = true;
@@ -192,8 +166,6 @@ int main(int argc, char** argv) {
             }
         }
 
-        // cout << "Circuit size: " << connected.size() << std::endl;
-
         circuitsizes.push_back(connected.size());
     }
 
@@ -203,26 +175,10 @@ int main(int argc, char** argv) {
         res *= circuitsizes[i];
     }
 
-
-
-    // for(u64 i = 0; i < shortestCount; i++) {
-    //     cout << get<0>(limited[i]) << "  " << get<1>(limited[i])->name << "  " << get<2>(limited[i])->name << std::endl;
-    // }
-
-
-
-
     cout << "Result 1 : " << res << std::endl;
     delete p1timing;
 
-
-
-    PChrono* p2timing = new PChrono("Problem2");
-    res = 0;
-    cout << "Result 2 : " << res << std::endl;
-    delete p2timing;
-
+    cout << "Result 2 : " << res2 << std::endl;
     
     return 0;
 }
-
