@@ -16,8 +16,7 @@ int main(int argc, char** argv) {
     vector<u64> nums = file.getDataOfNumbers();
     u64 numcount = nums.size() / 2;
 
-    i64 maxx = 0;
-    i64 maxy = 0;
+    vector<array<u64, 3>> rectcache;
 
     PChrono* p1timing = new PChrono("Problem1");
     u64 res = 0;
@@ -29,32 +28,20 @@ int main(int argc, char** argv) {
             i64 bx = nums[b*2];
             i64 by = nums[(b*2)+1];
 
-            rect++;
-
             area = (abs(ax-bx)+1) * (abs(ay-by)+1); // +1 because numbers are inclusive
             if(area > res) {
                 res = area;
             }
 
-            if(ax > maxx) {
-                maxx = ax;
-            }
-
-            if(ay > maxy) {
-                maxy = ay;
-            }
+            rectcache.push_back({area, a, b});
         }
     }
     cout << "Result 1 : " << res << std::endl;
     delete p1timing;
 
-    cout << "rect count : " << rect << std::endl;
-
     PChrono* p2timing = new PChrono("Problem2");
     res = 0;
 
-    maxx++;
-    maxy++;
 
     PChrono* p3timing = new PChrono("Alloc and init");
     const u64 cachesize = 100000;
@@ -115,71 +102,72 @@ int main(int argc, char** argv) {
     }
     delete p3timing;
 
+    // sort all the area big to small
+    sort(rectcache.begin(), rectcache.end(), [](auto a, auto b) {
+        return a[0] > b[0];
+    });
+
+    // check all the rect from large to small, the first valid one is good.
+    for(auto rect : rectcache) {
+        u64 area = rect[0];
+        u64 a = rect[1];
+        u64 b = rect[2];
+
+        i64 ax = nums[a*2];
+        i64 ay = nums[(a*2)+1];
+        i64 bx = nums[b*2];
+        i64 by = nums[(b*2)+1];
 
 
-    for(u64 a = 0; a < numcount-1; a++) {
-        for(u64 b = a+1; b < numcount; b++) {
-            i64 ax = nums[a*2];
-            i64 ay = nums[(a*2)+1];
-            i64 bx = nums[b*2];
-            i64 by = nums[(b*2)+1];
-            bool goodarea = true;
+        if(ax > bx) {
+            i64 tmp = bx;
+            bx = ax;
+            ax = tmp;
+        }
 
+        if(ay > by) {
+            i64 tmp = by;
+            by = ay;
+            ay = tmp;
+        }
 
-            area = (abs(ax-bx)+1) * (abs(ay-by)+1); // +1 because numbers are inclusive
-            if(area > res) {
-                // checking only potential larger areas
+        bool goodarea = true;
 
-                if(ax > bx) {
-                    i64 tmp = bx;
-                    bx = ax;
-                    ax = tmp;
-                }
+        //vertical
+        for(i64 y = ay; y <= by; y++) {
+            if(left[y] > ax) {
+                goodarea = false;
+                break;
+            }
 
-                if(ay > by) {
-                    i64 tmp = by;
-                    by = ay;
-                    ay = tmp;
-                }
-
-                //vertical
-                for(i64 y = ay; y <= by; y++) {
-                    if(left[y] > ax) {
-                        goodarea = false;
-                        break;
-                    }
-
-                    if(right[y] < bx) {
-                        goodarea = false;
-                        break;
-                    }
-                }
-
-                if(!goodarea) {
-                    continue;
-                }
-
-                //horizontal
-                for(i64 x = ax; x <= bx; x++) {
-                    if(top[x] > ay) {
-                        goodarea = false;
-                        break;
-                    }
-
-                    if(bottom[x] < by) {
-                        goodarea = false;
-                        break;
-                    }
-                }
-
-                if(goodarea) {
-                    res = area;
-                }
+            if(right[y] < bx) {
+                goodarea = false;
+                break;
             }
         }
+
+        if(!goodarea) {
+            continue;
+        }
+
+        //horizontal
+        for(i64 x = ax; x <= bx; x++) {
+            if(top[x] > ay) {
+                goodarea = false;
+                break;
+            }
+
+            if(bottom[x] < by) {
+                goodarea = false;
+                break;
+            }
+        }
+
+        if(goodarea) {
+            res = area;
+            break;
+        }
     }
-
-
 
     cout << "Result 2 : " << res << std::endl;
     delete p2timing;
