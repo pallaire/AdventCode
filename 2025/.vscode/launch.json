@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug dayXX (GDB)",
+      "name": "Linux Debug dayXX (GDB)",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/day${input:dayNumber}",
@@ -19,9 +19,26 @@
         { "description": "Enable pretty printing", "text": "-enable-pretty-printing", "ignoreFailures": true }
       ],
       "preLaunchTask": "Build dayXX (Debug)"
-      // For troubleshooting, temporarily add:
-      // "logging": { "engineLogging": true, "trace": true, "traceResponse": true }
+    },
+    {
+      "name": "Mac Debug dayXX (LLDB)",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/day${input:dayNumber}",
+      // "args": [],
+      "args": ["-t", "01"],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,           // avoid “hanging” on a missing console
+      "console": "integratedTerminal",    // show program I/O in VS Code terminal
+      // "MIMode": "gdb",
+      "setupCommands": [
+        { "description": "Enable pretty printing", "text": "-enable-pretty-printing", "ignoreFailures": true }
+      ],
+      "preLaunchTask": "Build dayXX (Debug)"
     }
+
   ],
   "inputs": [
     {
