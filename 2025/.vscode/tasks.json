@@ -27,8 +27,8 @@
     {
       "id": "dayNumber",
       "type": "promptString",
-      "description": "Enter the day number (01..24)",
-      "default": "02"
+      "description": "Enter the day number (1..12)",
+      "default": "1"
     }
   ]
 }

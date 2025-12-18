@@ -1,6 +1,4 @@
 #include <iostream>
-#include <vector>
-#include <unordered_set>
 
 #include "p2dmap.h"
 #include "pchrono.h"
@@ -60,7 +58,10 @@ int main(int argc, char** argv) {
     PChrono* p2timing = new PChrono("Problem2");
     res = 0;
 
-    vector<pair<i64, i64>> rechecks;
+    // vector<pair<i64, i64>> rechecks;
+    i64 recheckx[25000];
+    i64 rechecky[25000];
+    i64 rechecks = 0;
 
     // check all the map first
     for(i64 y = 1; y < h-1; y++) {
@@ -71,23 +72,20 @@ int main(int argc, char** argv) {
 
           // recheck all around
           for(i64 c = 0; c < 8; c++) {
-            i64 cx = x + kDX[c];
-            i64 cy = y + kDY[c];
-            rechecks.push_back({cx, cy});
+            recheckx[rechecks] = x + kDX[c];
+            rechecky[rechecks] = y + kDY[c];
+            rechecks++;
           }
         }
       }
     }
 
     // Check only the potential changes
-    pair<i64, i64> pos;
     i64 x, y;
-    while(rechecks.size()) {
-      pos = rechecks.back();
-      rechecks.pop_back();
-
-      x = pos.first;
-      y = pos.second;
+    while(rechecks > 0) {
+      rechecks--;
+      x = recheckx[rechecks];
+      y = rechecky[rechecks];
 
       if(map[y][x] == '.') {
         continue;
@@ -99,10 +97,9 @@ int main(int argc, char** argv) {
 
         // recheck all around
         for(i64 c = 0; c < 8; c++) {
-          i64 cx = x + kDX[c];
-          i64 cy = y + kDY[c];
-
-          rechecks.push_back({cx, cy});
+          recheckx[rechecks] = x + kDX[c];
+          rechecky[rechecks] = y + kDY[c];
+          rechecks++;
         }
       }
     }
@@ -112,9 +109,9 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-
 // base line : 1.1 --> 1.5ms
 // vector to set : 4x slower
 // in recheck, check map[y][x] == '.' for early skip if it was done already : 1ms
 // added a border to the map to remove the out of bound checks: 1ms
 // use Luc's addition algorithm instead of ifs. : 0.6ms
+// replace vector by fixed size array : 0.4ms
