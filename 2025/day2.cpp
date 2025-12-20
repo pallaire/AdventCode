@@ -1,5 +1,5 @@
+#include <cmath>
 #include <iostream>
-#include <regex>
 #include <string>
 
 #include "pchrono.h"
@@ -8,108 +8,115 @@
 
 using namespace std;
 
-bool findBySkipping(const string s, const u64 length, const char c, u64 start, u64 skip) {
-    u64 pos = start;
-    while (pos < length) {
-        if (s[pos] != c) {
-            return false;
-        }
-        pos += skip;
-    }
-    return true;
-}
-
-bool findRepeating(const string s, const u64 length, const u64 patternlength) {
-    for (u64 skip = 1; skip <= patternlength; skip++) {
-        if (length % skip != 0) {
-            continue;
-        }
-
-        for (u64 pos = 0; pos < skip; pos++) {
-            if (findBySkipping(s, length, s[pos], pos, skip)) {
-                if (pos == skip - 1) {
-                    return true;
-                }
-            } else {
-                break;
-            }
-        }
-    }
-    return false;
-}
 
 int main(int argc, char** argv) {
     cout << "Running Day number > " << DAY_NUM << std::endl;
     PChrono apptiming("Main");
     PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
-    vector<string> lines = file.getDataOfStrings();
 
-    string range;
-    stringstream ss(lines[0]);
+    char* chardata = file.getRawData();
+    u64 size = file.getSize();
 
-    regex pattern("(\\d+)-(\\d+)");
-    smatch matches;
+    u64 froms[64];
+    u64 tos[64];
+    u64 count = 0;
 
-    u64 from, to;
-    vector<pair<u64, u64>> data;
-    while (getline(ss, range, ',')) {
-        if (std::regex_search(range, matches, pattern)) {
-            data.push_back(pair<u64, u64>(stol(matches[1]), stol(matches[2])));
+    u64 work = 0;
+    char c;
+
+    for(u64 i = 0; i < size; i++) {
+        c = chardata[i];
+
+        switch(c) {
+            case ',':
+                tos[count] = work;
+                count++;
+                work = 0;
+                break;
+            case '-':
+                froms[count] = work;
+                work = 0;
+                break;
+            default:
+                work *= 10;
+                work += c - '0';
+                break;
         }
     }
+
+    // add the last pair
+    tos[count] = work;
+    count++;
 
     PChrono* p1timing = new PChrono("Problem1");
     u64 res = 0;
-    for (auto range : data) {
-        from = range.first;
-        to = range.second;
+    u64 res2 = 0;
+
+    for(u64 i = 0; i < count; i++) {
+        u64 from = froms[i];
+        u64 to = tos[i];
 
         for (u64 tocheck = from; tocheck <= to; tocheck++) {
-            string s = std::to_string(tocheck);
+            u64 digits = floor(log10(tocheck)) + 1;
+            u64 maxpattern = digits/2;
+            u64 divider = 10;
 
-            if (tocheck > 10) {
-                u64 l = s.length();
+            for(u64 patternlen = 1; patternlen <= maxpattern; patternlen++) {
+                // does the pattern fit?
+                if(digits % patternlen == 0) {
+                    u64 work  = tocheck;
+                    u64 pattern = work % divider;
+                    work /= divider;
 
-                // if even length
-                if ((l & 1) == 0) {
-                    u64 hl = l >> 1;
-                    bool same = true;
+                    u64 patterncheck;
+                    u64 found = true;
 
-                    for (u64 i = 0; i < hl; i++) {
-                        if (s[i] != s[i + hl]) {
-                            same = false;
+                    while(work > 0) {
+                        patterncheck = work % divider;
+
+                        if(pattern != patterncheck) {
+                            found = false;
                             break;
                         }
+
+                        work /= divider;
                     }
 
-                    if (same) {
-                        res += tocheck;
+                    if(found) {
+                        res2 += tocheck;
+
+                        // #1 embedded in #2
+                        if((digits&1) == 0) {
+                            // Problem one check only for the half
+                            u64 onedivider  = (u64)pow(10, digits/2);
+                            if((tocheck % onedivider) == (tocheck / onedivider)) {
+                                res += tocheck;
+                            }
+                        }
+
+
+                        break;
                     }
                 }
+                divider *= 10;
             }
         }
     }
-    cout << "Result 1 : " << res << std::endl;
     delete p1timing;
 
-    PChrono* p2timing = new PChrono("Problem2");
-    res = 0;
-    for (auto range : data) {
-        from = range.first;
-        to = range.second;
-
-        for (u64 tocheck = from; tocheck <= to; tocheck++) {
-            string s = std::to_string(tocheck);
-            u64 maxpattern = s.length() / 2;
-
-            if (findRepeating(s, s.length(), maxpattern)) {
-                res += tocheck;
-            }
-        }
-    }
-
-    cout << "Result 2 : " << res << std::endl;
-    delete p2timing;
+    cout << "Result 1 : " << res << std::endl;
+    cout << "Result 2 : " << res2 << std::endl;
 
     return 0;
 }
+
+// Result 1 : 38158151648
+// Result 2 : 45283684555
+// baseline with successfull #1 and #2 : 65ms
+// removed regex : 48ms
+// changed the vector<pair> to double u64 arrays: 48ms
+// no string using low/pow instead : 42ms
+// string ref where needed : 39ms
+// computational only, no str comparison : 33ms
+// embed #1 into #2 : 23ms
+
