@@ -8,6 +8,18 @@
 
 using namespace std;
 
+inline u64 digits64(u64 v) {
+    if (v >= 1000000000ULL) return 10;
+    if (v >= 100000000ULL)  return 9;
+    if (v >= 10000000ULL)   return 8;
+    if (v >= 1000000ULL)    return 7;
+    if (v >= 100000ULL)     return 6;
+    if (v >= 10000ULL)      return 5;
+    if (v >= 1000ULL)       return 4;
+    if (v >= 100ULL)        return 3;
+    if (v >= 10ULL)         return 2;
+    return 1;
+}
 
 int main(int argc, char** argv) {
     cout << "Running Day number > " << DAY_NUM << std::endl;
@@ -52,19 +64,21 @@ int main(int argc, char** argv) {
     u64 res = 0;
     u64 res2 = 0;
 
+    const u64 kEXPONENT[8] = {0ULL, 10ULL, 100ULL, 1000ULL, 10000ULL, 100000ULL, 1000000ULL, 10000000ULL};
+
     for(u64 i = 0; i < count; i++) {
         u64 from = froms[i];
         u64 to = tos[i];
 
         for (u64 tocheck = from; tocheck <= to; tocheck++) {
-            u64 digits = floor(log10(tocheck)) + 1;
+            u64 digits = digits64(tocheck);
             u64 maxpattern = digits/2;
-            u64 divider = 10;
 
             for(u64 patternlen = 1; patternlen <= maxpattern; patternlen++) {
                 // does the pattern fit?
                 if(digits % patternlen == 0) {
                     u64 work  = tocheck;
+                    u64 divider = kEXPONENT[patternlen];
                     u64 pattern = work % divider;
                     work /= divider;
 
@@ -88,17 +102,14 @@ int main(int argc, char** argv) {
                         // #1 embedded in #2
                         if((digits&1) == 0) {
                             // Problem one check only for the half
-                            u64 onedivider  = (u64)pow(10, digits/2);
-                            if((tocheck % onedivider) == (tocheck / onedivider)) {
+                            divider = kEXPONENT[digits/2];
+                            if((tocheck % divider) == (tocheck / divider)) {
                                 res += tocheck;
                             }
                         }
-
-
                         break;
                     }
                 }
-                divider *= 10;
             }
         }
     }
@@ -119,4 +130,5 @@ int main(int argc, char** argv) {
 // string ref where needed : 39ms
 // computational only, no str comparison : 33ms
 // embed #1 into #2 : 23ms
+// IFs based digit count : 9ms
 
