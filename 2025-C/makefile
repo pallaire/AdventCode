@@ -1,0 +1,71 @@
+# Parametric Makefile for day01.c ... day24.c + common sources
+# Usage:
+#   make DAY=05            # release build (O3 + fast-math)
+#   make DAY=05 DEBUG=1    # debug build (-O0 -g)
+#   make run DAY=05
+#   make gdb DAY=05
+#   make clean
+
+DETECTED_OS := $(shell uname -s)
+
+# ---- Choose the day file to build ----
+DAY ?= X
+DAY_SRC := day$(DAY).c
+
+# ---- Common sources compiled/linked alongside the day file ----
+# Space-separated list; add more as needed.
+# COMMON_SRCS := p2dmap.cpp pchrono.cpp pfile.cpp putils.cpp
+COMMON_SRCS := pfile.c
+
+BUILD_DIR := build
+SRCS   := $(DAY_SRC) $(COMMON_SRCS)
+OBJS := $(addprefix $(BUILD_DIR)/,$(SRCS:.c=.o))
+DEPS := $(OBJS:.o=.d)
+TARGET := day$(DAY)
+
+ifeq ($(DETECTED_OS),Darwin)
+	CXX := clang
+	ARCHFLAGS := -march=native -mcpu=apple-m4
+else 
+	CXX := gcc
+endif
+
+# ---- Flags ----
+STD      := -std=c23
+WARN     := -Wall -Wextra
+DEPFLAGS := -MMD -MP
+BASE     := $(STD) $(WARN) $(DEPFLAGS) -DDAY_NUM=$(DAY)
+
+# Default Debug build: make DEBUG=1
+CXXFLAGS := $(BASE) -O0 -g -fno-omit-frame-pointer -DDEBUG $(ARCHFLAGS)
+
+ifeq ($(RELEASE),1)
+	# Optimized build (fast)
+	CXXFLAGS := $(BASE) -O3 -ffast-math -DNDEBUG -DRELEASE $(ARCHFLAGS)
+endif
+
+# ---- Rules ----
+.PHONY: all clean run gdb
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+$(BUILD_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+run: $(TARGET)
+	./$(TARGET)
+
+# Launch GDB TUI for the selected day (forces DEBUG=1 for sane symbols)
+gdb: DEBUG=1
+gdb: $(TARGET)
+	gdb -tui ./$(TARGET)
+
+clean:
+	rm -rf $(BUILD_DIR) day?? day?
+
+# Include auto-generated dependencies
+-include $(DEPS)
