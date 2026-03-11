@@ -15,7 +15,7 @@ DAY_SRC := day$(DAY).c
 # ---- Common sources compiled/linked alongside the day file ----
 # Space-separated list; add more as needed.
 # COMMON_SRCS := p2dmap.cpp pchrono.cpp pfile.cpp putils.cpp
-COMMON_SRCS := pfile.c
+COMMON_SRCS := pchrono.c pfile.c
 
 BUILD_DIR := build
 SRCS   := $(DAY_SRC) $(COMMON_SRCS)
@@ -35,6 +35,8 @@ STD      := -std=c23
 WARN     := -Wall -Wextra
 DEPFLAGS := -MMD -MP
 BASE     := $(STD) $(WARN) $(DEPFLAGS) -DDAY_NUM=$(DAY)
+
+
 
 # Default Debug build: make DEBUG=1
 CXXFLAGS := $(BASE) -O0 -g -fno-omit-frame-pointer -DDEBUG $(ARCHFLAGS)
