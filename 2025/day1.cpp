@@ -8,71 +8,69 @@ using namespace std;
 
 
 int main (int argc, char** argv) {
-  cout << "Running Day number > " << DAY_NUM << std::endl;
   
-  PChrono apptiming("Main");
+  PChrono apptiming("");
   PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
-  vector<string> lines = file.getDataOfStrings();
+  char* bytes = file.getRawData();
+  u64 len = file.getSize();
 
-
+  char b = 0;
+  char dir = 0;
+  i64 num = 0;
   i64 pos = 50;
-  i64 dir;
-  i64 ticks;
-  i64 res = 0;
+  i64 startpos = 50;
+  i64 turns;
 
-  for(string l : lines) {
-    dir = l[0] == 'R' ? 1 : -1;
+  i64 res  = 0;
+  i64 res2 = 0;
 
-    ticks = stoi(l.substr(1));
-    if(dir > 0) {
-      ticks = 100 - ticks;
-    }
+  for(u64 i = 0; i < len; i += 1) {
+      b = bytes[i];
 
-    pos += ticks;
-    pos %= 100;
-
-    if(pos == 0) {
-      res++;
-    }
-  }
-
-  cout << "Result 1 : " << res << std::endl;
-
-
-
-  pos = 50;
-  res = 0;
-
-  i64 prevpos = pos;
-  i64 fullturns;
-
-  for(string l : lines) {
-    dir = l[0] == 'R' ? 1 : -1;
-    ticks = dir * stoi(l.substr(1));
-
-    fullturns = ticks / 100;
-    res += abs(fullturns);
-
-    ticks -= fullturns*100;
-    pos += ticks;
-
-    if(pos == 0) {
-      res++;
-    } else if(pos >= 100) {
-      pos %= 100;
-      res++;
-    } else if(pos < 0) {
-      pos = 100 + pos;
-      if(prevpos != 0) {
-        res++;
+      if(b == 'L' || b == 'R') {
+          dir = b;
+          continue;
+      } else {
+          if(b >= 48 && b <= 57) {
+              num *= 10;
+              num += (b - 48); // 48 is ASCII value of '0'
+          }
       }
-    }
 
-    prevpos = pos;
+      if(b == '\n' || i == len - 1) {
+
+          turns = num /100;
+          res2 += turns;
+          num -= turns * 100;
+
+          if(dir == 'L') {
+              if (num >= pos && startpos != 0) {
+                  res2 += 1;
+              }
+              pos = pos + 100 - num;
+          } else {
+              pos += num;
+              if(pos >= 100) {
+                  res2 += 1;
+              }
+          }
+          
+          if(pos >= 100) {
+              pos -= 100;
+          }
+          
+          if(pos == 0) {
+              res += 1;
+          }
+          
+          startpos = pos;
+          num = 0;
+      }
   }
 
-  cout << "Result 2 : " << res << std::endl;
-
+  cout << "Running Day number > " << DAY_NUM << std::endl;
+  cout << "Result 1 : " << res << std::endl;
+  cout << "Result 2 : " << res2 << std::endl;
 
   return 0;
 }
