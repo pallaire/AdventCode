@@ -38,13 +38,5 @@ void PChrono::print() {
   }
 
 	long long microseconds = chrono::duration_cast<chrono::microseconds>(delta).count();
-
-  if(microseconds < 1000) {
-    cout << "[PChrono] : " << _name << " total run time : "<< microseconds << "μs" << "   --->   " << (microseconds / 1000000.0f) << "s" << std::endl;
-  } else if (microseconds < 1000000) {
-    cout << "[PChrono] : " << _name << " total run time : "<< microseconds/1000.0f << "ms" << "   --->   " << (microseconds / 1000000.0f) << "s" << std::endl;
-  } else {
-    cout << "[PChrono] : " << _name << " total run time : " << (microseconds / 1000000.0f) << "s" << std::endl;
-  }
-
+  cout << "[PChrono] : " << _name << " total run time : " << microseconds << "μs" << "   --->   " << microseconds/1000.0f << "ms" << "   --->   " << (microseconds / 1000000.0f) << "s" << std::endl;
 }
