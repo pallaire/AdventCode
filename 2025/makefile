@@ -9,19 +9,18 @@
 DETECTED_OS := $(shell uname -s)
 
 # ---- Choose the day file to build ----
-DAY ?= X
-DAY_SRC := day$(DAY).cpp
+DAY_SRC := $(wildcard day*.cpp)
 
 # ---- Common sources compiled/linked alongside the day file ----
 # Space-separated list; add more as needed.
-COMMON_SRCS := p2dmap.cpp pchrono.cpp pfile.cpp putils.cpp
+COMMON_SRCS := main.cpp p2dmap.cpp pchrono.cpp pfile.cpp putils.cpp
 # Example:
 # COMMON_SRCS := pchrono.cpp utils.cpp helpers.cpp
 BUILD_DIR := build
 SRCS   := $(DAY_SRC) $(COMMON_SRCS)
 OBJS := $(addprefix $(BUILD_DIR)/,$(SRCS:.cpp=.o))
 DEPS := $(OBJS:.o=.d)
-TARGET := day$(DAY)
+TARGET := aoc2025
 
 ifeq ($(DETECTED_OS),Darwin)
 	CXX := clang++
@@ -34,7 +33,7 @@ endif
 STD      := -std=c++20
 WARN     := -Wall -Wextra
 DEPFLAGS := -MMD -MP
-BASE     := $(STD) $(WARN) $(DEPFLAGS) -DDAY_NUM=$(DAY)
+BASE     := $(STD) $(WARN) $(DEPFLAGS)
 
 # Default Debug build: make DEBUG=1
 CXXFLAGS := $(BASE) -O0 -g -fno-omit-frame-pointer -DDEBUG $(ARCHFLAGS)
@@ -65,7 +64,7 @@ gdb: $(TARGET)
 	gdb -tui ./$(TARGET)
 
 clean:
-	rm -rf $(BUILD_DIR) day?? day?
+	rm -rf $(BUILD_DIR) aoc2025
 
 # Include auto-generated dependencies
 -include $(DEPS)
