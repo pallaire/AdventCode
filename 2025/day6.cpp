@@ -8,10 +8,10 @@
 using namespace std;
 
 
-int main(int argc, char** argv) {
-    cout << "Running Day number > " << DAY_NUM << std::endl;
+int day6main(int argc, char** argv) {
+    cout << "Running Day number > " << 6 << std::endl;
     PChrono apptiming("Main");
-    PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
+    PFile file(PFile::getDataPathFromArgs(argc, argv, 6));
 
     PChrono* p1timing = new PChrono("Problem1");
     u64 res = 0;

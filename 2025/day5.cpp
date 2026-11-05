@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <string>
 
@@ -10,10 +11,10 @@ using namespace std;
 
 
 
-int main(int argc, char** argv) {
-    cout << "Running Day number > " << DAY_NUM << std::endl;
+int day5main(int argc, char** argv) {
+    cout << "Running Day number > " << 5 << std::endl;
     PChrono apptiming("Main");
-    PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
+    PFile file(PFile::getDataPathFromArgs(argc, argv, 5));
     vector<string> lines = file.getDataOfStrings(true);
 
 

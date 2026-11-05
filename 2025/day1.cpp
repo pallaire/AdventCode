@@ -7,10 +7,10 @@
 using namespace std;
 
 
-int main (int argc, char** argv) {
+int day1main (int argc, char** argv) {
   
   PChrono apptiming("");
-  PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
+  PFile file(PFile::getDataPathFromArgs(argc, argv, 1));
   char* bytes = file.getRawData();
   u64 len = file.getSize();
 
@@ -68,7 +68,7 @@ int main (int argc, char** argv) {
       }
   }
 
-  cout << "Running Day number > " << DAY_NUM << std::endl;
+  cout << "Running Day number > " << 1 << std::endl;
   cout << "Result 1 : " << res << std::endl;
   cout << "Result 2 : " << res2 << std::endl;
 

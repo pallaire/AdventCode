@@ -146,10 +146,10 @@ public:
     map<u32, u64> cache;
 };
 
-int main(int argc, char** argv) {
-    cout << "Running Day number > " << DAY_NUM << std::endl;
+int day10main(int argc, char** argv) {
+    cout << "Running Day number > " << 10 << std::endl;
     PChrono apptiming("Main");
-    PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
+    PFile file(PFile::getDataPathFromArgs(argc, argv, 10));
 
 
     PChrono* p1timing = new PChrono("Problem1");

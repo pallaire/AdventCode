@@ -31,10 +31,10 @@ bool isAccessible(const P2DMap& map, i64 x, i64 y) {
   return (total - (8*'.')) < (4 * ('@'-'.'));
 }
 
-int main(int argc, char** argv) {
-    cout << "Running Day number > " << DAY_NUM << std::endl;
+int day4main(int argc, char** argv) {
+    cout << "Running Day number > " << 4 << std::endl;
     PChrono apptiming("Main");
-    PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
+    PFile file(PFile::getDataPathFromArgs(argc, argv, 4));
     P2DMap map(file.getRawData(), file.getSize(), '.');
 
     PChrono* p1timing = new PChrono("Problem1");
@@ -52,8 +52,7 @@ int main(int argc, char** argv) {
 
     cout << "Result 1 : " << res << std::endl;
     delete p1timing;
-
-  
+      
     
     PChrono* p2timing = new PChrono("Problem2");
     res = 0;

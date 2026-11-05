@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{72c7a914-106e-477c-aa18-c76e47f7a035}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="day1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="day2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="day3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="day4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="day5.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="day6.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="day7.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="day8.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="day9.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="day10.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="day11.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="p2dmap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pchrono.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="putils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="p2dmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pchrono.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pfile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ptypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="putils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="data\day11_test02.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day11_test01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day11.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day10_test01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day10.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day09_test01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day09.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day08_test01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day08.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day07_test01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day07.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day06_test01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day06.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day05_test01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day05.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day04_test01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day04.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day03_test01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day03.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day02_test01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day02.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day01_test01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day12_test01.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="data\day12.txt">
+      <Filter>Data</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\README">
+      <Filter>Data</Filter>
+    </None>
+  </ItemGroup>
+</Project>

@@ -9,10 +9,10 @@
 using namespace std;
 
 
-int main(int argc, char** argv) {
-    cout << "Running Day number > " << DAY_NUM << std::endl;
+int day3main(int argc, char** argv) {
+    cout << "Running Day number > " << 3 << std::endl;
     PChrono apptiming("Main");
-    PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
+    PFile file(PFile::getDataPathFromArgs(argc, argv, 3));
     vector<string> lines = file.getDataOfStrings();
 
 

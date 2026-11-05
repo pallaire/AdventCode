@@ -27,10 +27,10 @@ struct Result {
     u64 res2;
 };
 
-int main(int argc, char** argv) {
-    cout << "Running Day number > " << DAY_NUM << std::endl;
+int day2main(int argc, char** argv) {
+    cout << "Running Day number > " << 2 << std::endl;
     PChrono apptiming("Main");
-    PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
+    PFile file(PFile::getDataPathFromArgs(argc, argv, 2));
 
     char* chardata = file.getRawData();
     u64 size = file.getSize();

@@ -47,10 +47,10 @@ u64 climb(const P2DMap map, u64 w, u64 h, i64 x, i64 y) {
 }
 
 
-int main(int argc, char** argv) {
-    cout << "Running Day number > " << DAY_NUM << std::endl;
+int day7main(int argc, char** argv) {
+    cout << "Running Day number > " << 7 << std::endl;
     PChrono apptiming("Main");
-    PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
+    PFile file(PFile::getDataPathFromArgs(argc, argv, 7));
     P2DMap map(file.getRawData(), file.getSize());
     u64 w = map.getWidth();
     u64 h = map.getHeight();

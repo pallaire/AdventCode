@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <array>
 #include <vector>
@@ -8,12 +9,12 @@
 
 using namespace std;
 
-int main(int argc, char** argv) {
-    cout << "Running Day number > " << DAY_NUM << std::endl;
+int day9main(int argc, char** argv) {
+    cout << "Running Day number > " << 9 << std::endl;
     PChrono apptiming("Main");
-    PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
-    vector<u64> nums = file.getDataOfNumbers();
-    u64 numcount = nums.size() / 2;
+    PFile file(PFile::getDataPathFromArgs(argc, argv, 9));
+    vector<u32> nums = file.getDataOfNumbers();
+    u32 numcount = (u32)(nums.size() / 2);
 
     vector<array<u64, 3>> rectcache;
 
@@ -43,12 +44,12 @@ int main(int argc, char** argv) {
 
 
     PChrono* p3timing = new PChrono("Alloc and init");
-    const u64 cachesize = 100000;
+    const u32 cachesize = 100000;
     i32* left = new i32[cachesize];
     i32* right = new i32[cachesize];
     i32* top = new i32[cachesize];
     i32* bottom = new i32[cachesize];
-    for(u64 i = 0; i < cachesize; i++) {
+    for(u32 i = 0; i < cachesize; i++) {
         left[i] = 1000000;
         right[i] = -1;
         top[i] = 1000000;
@@ -56,28 +57,28 @@ int main(int argc, char** argv) {
     }
 
     // find the borders
-    for(u64 a = 0; a < numcount; a++) {
-        u64 b = (a+1)%numcount;
-        i64 ax = nums[a*2];
-        i64 ay = nums[(a*2)+1];
-        i64 bx = nums[b*2];
-        i64 by = nums[(b*2)+1];
+    for(u32 a = 0; a < numcount; a++) {
+        u32 b = (a+1)%numcount;
+        i32 ax = nums[a*2];
+        i32 ay = nums[(a*2)+1];
+        i32 bx = nums[b*2];
+        i32 by = nums[(b*2)+1];
 
         if(ax > bx) {
-            i64 tmp = bx;
+            i32 tmp = bx;
             bx = ax;
             ax = tmp;
         }
 
         if(ay > by) {
-            i64 tmp = by;
+            i32 tmp = by;
             by = ay;
             ay = tmp;
         }
 
         if(ax == bx) {
             //vertical
-            for(i64 y = ay; y <= by; y++) {
+            for(i32 y = ay; y <= by; y++) {
                 if(ax < left[y]) {
                     left[y] = ax;
                 }
@@ -88,7 +89,7 @@ int main(int argc, char** argv) {
             }
         } else {
             //horizontal
-            for(i64 x = ax; x <= bx; x++) {
+            for(i32 x = ax; x <= bx; x++) {
                 if(ay < top[x]) {
                     top[x] = ay;
                 }
@@ -112,20 +113,20 @@ int main(int argc, char** argv) {
         u64 a = rect[1];
         u64 b = rect[2];
 
-        i64 ax = nums[a*2];
-        i64 ay = nums[(a*2)+1];
-        i64 bx = nums[b*2];
-        i64 by = nums[(b*2)+1];
+        i32 ax = nums[a*2];
+        i32 ay = nums[(a*2)+1];
+        i32 bx = nums[b*2];
+        i32 by = nums[(b*2)+1];
 
 
         if(ax > bx) {
-            i64 tmp = bx;
+            i32 tmp = bx;
             bx = ax;
             ax = tmp;
         }
 
         if(ay > by) {
-            i64 tmp = by;
+            i32 tmp = by;
             by = ay;
             ay = tmp;
         }
@@ -133,7 +134,7 @@ int main(int argc, char** argv) {
         bool goodarea = true;
 
         //vertical
-        for(i64 y = ay; y <= by; y++) {
+        for(i32 y = ay; y <= by; y++) {
             if(left[y] > ax) {
                 goodarea = false;
                 break;
@@ -150,7 +151,7 @@ int main(int argc, char** argv) {
         }
 
         //horizontal
-        for(i64 x = ax; x <= bx; x++) {
+        for(i32 x = ax; x <= bx; x++) {
             if(top[x] > ay) {
                 goodarea = false;
                 break;

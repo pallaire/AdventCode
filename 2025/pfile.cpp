@@ -90,12 +90,12 @@ vector<string> PFile::getDataOfStrings(bool keepEmptyLines) {
   return res;
 }
 
-vector<u64> PFile::getDataOfNumbers() {
-  vector<u64> res;
+vector<u32> PFile::getDataOfNumbers() {
+  vector<u32> res;
 
   char* start = nullptr;
 
-  for(u64 i = 0; i < _size; i++) {
+  for(u32 i = 0; i < _size; i++) {
     if(_data[i] < '0' || _data[i] > '9') {
       _data[i] = 0;
       res.push_back(atol(start));

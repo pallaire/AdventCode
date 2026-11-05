@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="AoC2025CPP.vcxproj" Id="8c9a5a60-d9ce-4276-a45f-bffdee2869e9" />
+</Solution>

@@ -17,7 +17,7 @@ public:
   u64 getSize();
   char* getRawData();
   vector<string> getDataOfStrings(bool keepEmptyLines=false);
-  vector<u64> getDataOfNumbers();
+  vector<u32> getDataOfNumbers();
   bool getIsTestFile();
 
   static string getDataPathFromArgs(int argc, char** argv, u64 day);

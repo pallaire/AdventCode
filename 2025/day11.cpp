@@ -58,10 +58,10 @@ u64 countPathFromSVR(map<string, vector<string>>& data, string& pos, u64 dac, u6
 }
 
 
-int main(int argc, char** argv) {
-    cout << "Running Day number > " << DAY_NUM << std::endl;
+int day11main(int argc, char** argv) {
+    cout << "Running Day number > " << 11 << std::endl;
     PChrono apptiming("Main");
-    PFile file(PFile::getDataPathFromArgs(argc, argv, DAY_NUM));
+    PFile file(PFile::getDataPathFromArgs(argc, argv, 11));
 
 
 
